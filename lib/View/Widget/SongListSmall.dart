@@ -1,33 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:must/View/EnrollView/PerformEnroll.dart';
+import 'package:must/data/api_service.dart';
 import 'package:must/style.dart' as myStyle;
 
-import '../../data/json.dart';
+import '../../data/searchJson.dart';
+
 class SongListSmall extends StatelessWidget {
-
-  var songWidget;
-  // final List<Song> songs = songWidget;
-  SongListSmall({required this.songWidget,super.key});
-
+  SongListSmall({required this.song, required this.thumbnail,super.key});
+  SearchSong song;
+  var thumbnail;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5.h),
-      height: 50.h,
-      child: Row(
-        children: [
-          SizedBox(width: 50.w, child: Image.network(songWidget.thumbnail),),
-          SizedBox(width: 5.w,),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(songWidget.title,style: myStyle.textTheme.bodySmall,),
-              Text(songWidget.artist,style: myStyle.textTheme.displaySmall,)
-            ],
-          )
-        ],
+    return InkWell(
+      onTap:(){
+        //등록
+        enrollSongData(song.songId);
+        Get.to(() => PerformEnroll(song: song, thumbnail:  thumbnail,));
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 5.h),
+        height: 50.h,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 50.w,
+              child: thumbnail != null
+                  ? Image.memory(thumbnail!, width: 50, height: 50)
+                  : Container(width: 50, height: 50, color: Colors.grey),
+            ),
+            SizedBox(width: 5.w,),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(song.title,style: myStyle.textTheme.bodySmall,),
+                Text(song.artist,style: myStyle.textTheme.displaySmall,)
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,11 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:must/data/quizJson.dart';
 import 'package:must/data/searchJson.dart';
-import 'package:must/data/soundQuizParsing.dart';
 import 'dart:convert';
 import 'json2.dart';
 
@@ -13,32 +11,25 @@ Uint8List decodeBase64(String base64String) {
   return base64.decode(base64String);
 }
 
-Future enrollSongData(String query) async {
-  var url = Uri.parse('http://222.108.102.12:9090/songs/${query}');
-  String _data = 'No data';
+Future enrollSongData(int songId) async {
+  var url = Uri.parse('http://222.108.102.12:9090/songs/new?memberId=1&songId=${songId}');
+  String result;
   try {
     var response = await http.post(url);
-    // Log headers and status code for debugging
-    print('Response status: ${response.statusCode}');
-    print('Headers: ${response.headers}');
-
-    // Check for content type and process accordingly
-    if (response.headers['content-type']?.contains('application/json') ??
-        false) {
-      var jsonData = json.decode(response.body);
-      _data = jsonData.toString();
-      print('JSON data: $_data');
-    } else {
-      // If not JSON, just decode as text for now
+    if (response.statusCode == 200) {
+      print('Response status: ${response.statusCode}');
       var decodedBody = utf8.decode(response.bodyBytes);
-      print('Non-JSON Response body: $decodedBody');
-      _data = decodedBody;
+      print('Response body: $decodedBody');
+      result="등록이 완료되었습니다";
+    } else {
+      print('Failed to load song details: Server responded ${response.statusCode}');
+      result = "통신오류";
     }
   } catch (e) {
-    print('Exception caught: $e');
-    _data = 'Failed to make request: $e';
-    print(_data);
+    print('Failed to make request for song details: $e');
+    result = e.toString();
   }
+  print(result);
 }
 
 Future<Uint8List?> fetchSongThumbnail(int songID) async {
@@ -107,6 +98,27 @@ Future<List<SearchSong>> searchSongData(String? query) async {
       print('Response body: $decodedBody');
       // SearchSong searchSong = searchSongFromJson(decodedBody);
       List<SearchSong> song = searchSongsFromJson(decodedBody);
+      return song;
+    } else {
+      print('One or both responses failed');
+      throw Exception('Failed to load song data due to server response: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Failed to make request: $e');
+    throw Exception('Failed to process request: $e'); // Ensure you throw an exception here
+  }
+}
+
+Future<List<SearchSong>> totalSearchSongData(String? query) async {
+  var url = Uri.parse('http://222.108.102.12:9090/search?artist=$query');
+  try {
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var decodedBody = utf8.decode(response.bodyBytes);
+      print('Response body: $decodedBody');
+      print('Response end');
+      List<SearchSong> song = searchSongsFromJson(decodedBody);
+      print("list end");
       return song;
     } else {
       print('One or both responses failed');
