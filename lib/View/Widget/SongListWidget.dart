@@ -1,12 +1,10 @@
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/style.dart' as myStyle;
-import '../../data/json2.dart';
+
 import '../../data/searchJson.dart';
 import '../SongDetailView/SongDetailView.dart';
 

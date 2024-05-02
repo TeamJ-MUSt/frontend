@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/json.dart';
-import '../SongDetailView/SongDeatil.dart';
+import '../SongDetailView/SongDetailBasic.dart';
 
 class AlbumWidget extends StatelessWidget {
   AlbumWidget(this.songs, {super.key});

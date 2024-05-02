@@ -8,7 +8,6 @@ import '../../data/json2.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
 import '../Widget/SongListWidget.dart';
-import '../Widget/SongListWidgetNoPic.dart';
 
 class FindDataView extends StatelessWidget {
   String query;

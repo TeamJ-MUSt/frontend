@@ -31,7 +31,7 @@ class SongDetailCardAPI extends StatelessWidget {
         // mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 100.w, child: Image.memory(thumbnail)),
+          SizedBox(height: 100.w, child: Image.memory(thumbnail, fit: BoxFit.cover,)),
           SizedBox(
             width: 10.w,
           ),
