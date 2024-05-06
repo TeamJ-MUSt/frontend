@@ -61,7 +61,7 @@ class _PerformEnrollState extends State<PerformEnroll> {
                 ? Image.memory(widget.thumbnail!,width:150.w,fit: BoxFit.cover, )
                 : Container(width: 150.w, height: 150.h, color: Colors.grey),
           ),
-          Text(widget.song.title, style: myStyle.textTheme.titleMedium,),
+          Text(widget.song.title, style: myStyle.textTheme.titleMedium,textAlign: TextAlign.center,),
           Text(widget.song.artist, style: myStyle.textTheme.labelMedium,),
           SizedBox(height: 50.h),
           InkWell(

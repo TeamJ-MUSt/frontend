@@ -43,6 +43,7 @@ class SongListWidget extends StatelessWidget {
                   children: [
                     Text(
                       song.title,
+                      overflow: TextOverflow.ellipsis,
                       style: myStyle.textTheme.bodySmall,
                     ),
                     Text(

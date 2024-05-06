@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:must/View/LearningView/QuizEndView.dart';
 import 'package:must/style.dart' as myStyle;
 
 import '../../data/api_service.dart';
@@ -25,6 +28,7 @@ class _MeaningQuizViewState extends State<MeaningQuizView> {
   String resultMessage = ''; //결과멘트
   String submitMent = '';  // 제출멘트
   late Color submitButtonColor; //선택버튼색
+  int correctCnt = 0;
   bool end = false; //마지막
 
   @override
@@ -73,29 +77,33 @@ class _MeaningQuizViewState extends State<MeaningQuizView> {
     }
   }
 
-
-
-
   void submitAnswer() {
+    if (selectedIndex == -1 || resultMessage.isNotEmpty) {
+      // Avoid multiple submissions or no selection
+      return;
+    }
+
     setState(() {
       if (selectedIndex == correctIndex) {
-        resultMessage = '정답입니다';
-        submitMent = quizzes.length > currentQuizIndex + 1 ? "다음으로" : "퀴즈 끝";
+        resultMessage = '정답입니다!';
         submitButtonColor = myStyle.pointColor;
-        if (quizzes.length > currentQuizIndex + 1) {
-        } else {
-          end = true; // 모든 퀴즈 완료
-        }
-      } else if(submitMent=='다음으로'){
-        updateQuizDisplay(currentQuizIndex + 1);
+        correctCnt+=1;
+      } else {
+        resultMessage = '오답입니다. 정답: ${quizzes[currentQuizIndex].answer}';
+        submitButtonColor = myStyle.mainColor; // Assuming you have a color set for errors
       }
-      else {
-        submitMent = "제출하기";
-        resultMessage = '오답입니다';
-        submitButtonColor = myStyle.mainColor;
+
+      // Always allow moving to the next question after a submission
+      if (currentQuizIndex < quizzes.length - 1) {
+        submitMent = "다음으로";
+      } else {
+        submitMent = "퀴즈 끝";
+        end = true; // It's the last quiz
       }
     });
   }
+
+
 
 
   Widget optionButton(String option, int index) {
@@ -177,7 +185,8 @@ class _MeaningQuizViewState extends State<MeaningQuizView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(resultMessage ?? '',
+                  child:
+                  Text(resultMessage ?? '',
                       style: myStyle.textTheme.bodyMedium),
                 ),
                 ...options
@@ -196,7 +205,17 @@ class _MeaningQuizViewState extends State<MeaningQuizView> {
                   padding: EdgeInsets.symmetric(
                       vertical: 3.h, horizontal: 20.w),
                   child: InkWell(
-                    onTap: submitAnswer,
+                    onTap: () {
+                      if (submitMent == "다음으로" || submitMent == "퀴즈 끝") {
+                        if (currentQuizIndex < quizzes.length - 1) {
+                          updateQuizDisplay(currentQuizIndex + 1); // Move to the next question
+                        } else {
+                          Get.offAll(()=>QuizEndView(correctCnt: correctCnt,));
+                        }
+                      } else {
+                        submitAnswer();
+                      }
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       decoration: BoxDecoration(

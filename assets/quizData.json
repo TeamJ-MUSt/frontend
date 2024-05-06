@@ -1,37 +1,37 @@
 [
   {
     "question" : "僕ら",
-    "read" : "ぼくら",
+    "read" : "(ぼくら, bokura)",
     "options" : ["우리", "너", "나", "그녀"],
     "answer" : "우리"
   },
   {
     "question" : "愛する",
-    "read" : "あいする",
+    "read" : "(あいする, aisuru)",
     "options" : ["싫어하다", "변하다", "사랑하다", "감사하다"],
     "answer" : "사랑하다"
   },
   {
     "question" : "主人公",
-    "read" : "しゅじんこう",
+    "read" : "(しゅじんこう, shujinkou",
     "options" : ["기둥", "회사", "주인공", "양아치"],
     "answer" : "주인공"
   },
   {
     "question" : "青白い",
-    "read" : "あおじろい",
+    "read" : "(あおじろい, aojiroi)",
     "options" : ["희푸르다", "맑다", "하얗다", "깨끗하다"],
     "answer" : "희푸르다"
   },
   {
     "question" : "開ける",
-    "read" : "あける",
+    "read" : "(あける, akeru)",
     "options" : ["형상하다", "닫다", "열다", "잠그다"],
     "answer" : "열다"
   },
   {
     "question" : "箱",
-    "read" : "はこ",
+    "read" : "(はこ, hako)",
     "options" : ["제사", "상자", "종", "책"],
     "answer" : "상자"
   }
