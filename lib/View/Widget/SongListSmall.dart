@@ -9,16 +9,21 @@ import 'package:must/style.dart' as myStyle;
 import '../../data/searchJson.dart';
 
 class SongListSmall extends StatelessWidget {
-  SongListSmall({required this.song, required this.thumbnail,super.key});
+  SongListSmall({required this.song, required this.thumbnail, super.key});
+
   SearchSong song;
   var thumbnail;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap:(){
+      onTap: () {
         //등록
         enrollSongData(song.songId);
-        Get.to(() => PerformEnroll(song: song, thumbnail:  thumbnail,));
+        Get.to(() => PerformEnroll(
+              song: song,
+              thumbnail: thumbnail,
+            ));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 5.h),
@@ -31,14 +36,26 @@ class SongListSmall extends StatelessWidget {
                   ? Image.memory(thumbnail!, width: 50, height: 50)
                   : Container(width: 50, height: 50, color: Colors.grey),
             ),
-            SizedBox(width: 5.w,),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(song.title,style: myStyle.textTheme.bodySmall,),
-                Text(song.artist,style: myStyle.textTheme.displaySmall,)
-              ],
+            SizedBox(
+              width: 5.w,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    song.title,
+                    style: myStyle.textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    song.artist,
+                    style: myStyle.textTheme.displaySmall,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ],
+              ),
             )
           ],
         ),
