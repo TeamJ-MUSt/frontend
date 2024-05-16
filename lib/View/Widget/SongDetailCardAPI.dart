@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../data/json2.dart';
+import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 
 
@@ -35,27 +35,29 @@ class SongDetailCardAPI extends StatelessWidget {
           SizedBox(
             width: 10.w,
           ),
-          SizedBox(
-            // color: Colors.deepPurple,
-            width: 170.w,
-            height: 80.h,
-            // margin: EdgeInsets.symmetric(vertical: 15.h),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "level",
-                ),
-                Text(
-                  song.title,
-                  style: myStyle.textTheme.bodyMedium,
-                ),
-                Text(
-                  song.artist,
-                  style: myStyle.textTheme.displayMedium,
-                )
-              ],
+          Flexible(
+            child: SizedBox(
+              // color: Colors.deepPurple,
+              width: 170.w,
+              height: 80.h,
+              // margin: EdgeInsets.symmetric(vertical: 15.h),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "level",
+                  ),
+                  Text(
+                    song.title,
+                    style: myStyle.textTheme.bodyMedium,
+                  ),
+                  Text(
+                    song.artist,
+                    style: myStyle.textTheme.displayMedium,
+                  )
+                ],
+              ),
             ),
           ),
           IconButton(

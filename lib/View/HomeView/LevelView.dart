@@ -3,10 +3,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:must/View/Widget/SongListSmall.dart';
 import 'package:must/View/Widget/SongListWidget.dart';
+import 'package:must/View/Widget/noImageSongList.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/api_service.dart';
-import '../../data/json2.dart';
+import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 
 class LevelView extends StatefulWidget {
@@ -56,7 +57,7 @@ class _LevelViewState extends State<LevelView> {
             itemCount: songs.length,
             itemBuilder: (context, index) {
               SearchSong song = songs[index]; // Retrieve the thumbnail using songId
-              // return SongListWidget(title: song.title, artist: song.artist, thumbnail: thumbnails[song.songId]);
               return SongListWidget(song: song,thumbnail: thumbnails[song.songId],);
+              // return NoImageSongList(song: song,);
             }));
   }}

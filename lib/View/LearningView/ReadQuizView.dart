@@ -6,21 +6,20 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:must/View/LearningView/QuizEndView.dart';
 import 'package:must/style.dart' as myStyle;
 import 'dart:math';
+import '../../data/ReadingQuizParsing.dart';
 import '../../data/api_service.dart';
 import '../../data/MeaningQuizParsing.dart';
 
-import 'package:http/http.dart' as http;
-
-class MeaningQuizView extends StatefulWidget {
-  MeaningQuizView({required this.songId, super.key});
+class ReadQuizView extends StatefulWidget {
+  ReadQuizView({required this.songId, super.key});
   int songId;
   @override
-  State<MeaningQuizView> createState() => _MeaningQuizViewState();
+  State<ReadQuizView> createState() => _ReadQuizViewState();
 }
 
-class _MeaningQuizViewState extends State<MeaningQuizView> {
+class _ReadQuizViewState extends State<ReadQuizView> {
 
-  List<MeanQuiz> quizzes = []; //퀴즈 리스트
+  List<ReadQuiz> quizzes = []; //퀴즈 리스트
   int currentQuizIndex = 0; //현재 퀴즈 번호
   late String question; //문제
   late String answers; //답
@@ -45,40 +44,20 @@ class _MeaningQuizViewState extends State<MeaningQuizView> {
     submitButtonColor = myStyle.basicGray; // 초기 버튼 색상
     loadQuizData(); // 퀴즈 데이터 로드
   }
-
-  void getQuiz() async {
-    quizzes = await fetchMeanQuizData2(widget.songId);  // 클래스 레벨의 quizzes를 직접 업데이트
-    print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
-    if (quizzes.isNotEmpty) {
-      quizzes.forEach((quiz) {
-        // answers를 choices에 추가하고 랜덤으로 섞습니다.
-        quiz.choices.add(quiz.answers[0]);
-        quiz.choices.shuffle(Random());
-      });
-      updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
-    } else {
-      print('Quiz data is empty');
-    }
-  }
-
-  void loadQuizData() async {      //퀴즈를 로드하는 법
+  void loadQuizData() async {
     try {
-      // 조회해서 false면 생성합니다
-      int isFetched = await fetchMeanQuizData(widget.songId);
-      print('isFetched : ${isFetched}');
-      if(isFetched == 0){ //조회가 안되면 생성합니다
-        bool isCreating = await creatingMeanQuiz(widget.songId);
-        //생성이 됐으면 가져옵니다
-        if(isCreating) getQuiz();
-        else print("create fail");
-      }else if(isFetched == 1){ // 조회가 되면 가져옵니다
-        getQuiz() ; // 클래스 레벨의 quizzes를 직접 업데이트
-        print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
-        if (quizzes.isNotEmpty) {
-          getQuiz();
-        }else{
-          print(isFetched.toString());
-        }
+      // String jsonString = await notAPIMeanQuizData();
+      quizzes = await fetchReadQuizData();  // 클래스 레벨의 quizzes를 직접 업데이트
+      print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
+      if (quizzes.isNotEmpty) {
+        quizzes.forEach((quiz) {
+          // answers를 choices에 추가하고 랜덤으로 섞습니다.
+          quiz.choices.add(quiz.answers[0]);
+          quiz.choices.shuffle(Random());
+        });
+        updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
+      } else {
+        print('Quiz data is empty');
       }
     } catch (e) {
       print('Error loading quiz data: $e');
@@ -165,7 +144,7 @@ class _MeaningQuizViewState extends State<MeaningQuizView> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "의미 퀴즈",
+          "발음 퀴즈",
           style: myStyle.textTheme.labelMedium,
         ),
         backgroundColor: Colors.white,

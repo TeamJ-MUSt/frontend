@@ -76,7 +76,7 @@ class _SongDetailState extends State<SongDetail> {
                     LearningWidget(
                       content: '단어 퀴즈 - 뜻 맞추기',
                       comment: '단어를 보고 한국어 뜻을 골라주세요',
-                      moveTo: MeaningQuizView(),
+                      moveTo: MeaningQuizView(songId: 1,),
                     ),
                     LearningWidget(
                       content: '단어 퀴즈 - 발음 맞추기',

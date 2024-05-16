@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../data/json2.dart';
+import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
 import '../Widget/SongListWidget.dart';

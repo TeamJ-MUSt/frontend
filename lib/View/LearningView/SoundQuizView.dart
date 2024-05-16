@@ -1,10 +1,12 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:must/data/soundQuizParsing.dart';
+import 'package:must/data/ReadingQuizParsing.dart';
 import 'package:must/style.dart' as myStyle;
+
+import '../../data/api_service.dart';
 
 class SoundQuizView extends StatefulWidget {
   const SoundQuizView({super.key});
@@ -14,149 +16,72 @@ class SoundQuizView extends StatefulWidget {
 }
 
 class _SoundQuizViewState extends State<SoundQuizView> {
-  // Now a list to hold multiple selections
-  final String question = "僕ら";
-  final String meaning = "우리";
-  final String answer = "ぼく";
-  late int answerLength = answer.length;
-  var selectedOptions = [];
-  final List<String> options = ["ぼ", "う", "ね", "ね", "ほ", "く"];
-  String submitAnswer = '';
+  List<ReadQuiz> quizzes = [];
+  int currentQuizIndex = 0;
 
-  void toggleOption(int index) {
-    setState(() {
-      if (selectedOptions.contains(index)) {
-        selectedOptions.remove(index);
-      } else {
-        selectedOptions.add(index);
-      }
-      submitAnswer = selectedOptions.map((idx) {
-        return options[idx];
-      }).join();
-    });
+  @override
+  void initState() {
+    super.initState();
+    loadQuizData();
   }
 
-  Widget optionButton(int index) {
-    bool isSelected = selectedOptions.contains(index);
-    return GestureDetector(
-      onTap: () {
-        toggleOption(index);
-      },
-      child: Container(
-        margin: EdgeInsets.all(2.w),
-        decoration: BoxDecoration(
-          color: isSelected ? myStyle.mainColor : Colors.white,
-          border: Border.all(
-            color: myStyle.mainColor,
-            width: 2.0.w,
-          ),
-          borderRadius: BorderRadius.circular(8.0.r),
-        ),
-        child: Center(
-          child: Text(
-            options[index], // Directly use index to fetch the string
-            style: TextStyle(
-              fontSize: 22.0.sp,
-              color: isSelected ? Colors.white : Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
+  void loadQuizData() async {
+    // 가정: quizJsonString은 API 호출 또는 로컬 파일로부터 받은 JSON 문자열입니다.
+    quizzes = await fetchReadQuizData();
+    if (quizzes.isNotEmpty) {
+      quizzes.forEach((quiz) {
+        // answers를 choices에 추가하고 랜덤으로 섞습니다.
+        quiz.choices.add(quiz.answers[0]);
+        quiz.choices.shuffle(Random());
+      });
+      updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
+    } else {
+      print('Quiz data is empty');
+    }
   }
-  
-  Widget quiz(QuizItem quiz){
+
+  void updateQuizDisplay(int index) {
+    if (index < quizzes.length) {
+      setState(() {
+        currentQuizIndex = index;
+      });
+    }
+  }
+
+  Widget buildQuizBody() {
+    if (quizzes.isEmpty) return Center(child: CircularProgressIndicator());
+    ReadQuiz currentQuiz = quizzes[currentQuizIndex];
     return Column(
       children: [
-        Expanded(
-          flex: 6,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(submitAnswer),
-              Text(
-                quiz.question,
-                style: myStyle.textTheme.titleLarge,
-              ),
-              Text(
-                quiz.meaning,
-                style: myStyle.textTheme.titleMedium,
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 6,
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-              crossAxisCount: 2,
-              childAspectRatio: 2,
-            ),
-            itemCount: quiz.options.length,
-            itemBuilder: (BuildContext context, int index) {
-              return optionButton(index);
-            },
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: InkWell(
-            onTap: (){
-              String result;
-              submitAnswer == quiz.answer ? result='정답' : result ='오답';
-              print(result);
-            },
-            child: Container(
-              alignment: Alignment.center,
-              // height: 35.h,
-              decoration: BoxDecoration(
-                color: submitAnswer == '' ? myStyle.basicGray : myStyle.mainColor,
-                borderRadius: BorderRadius.circular(8.0.r),
-              ),
-              child: Text(
-                '스킵하기',
-                style: myStyle.textTheme.headlineMedium,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 30.h,
-        ),
+        Text(currentQuiz.word, style: TextStyle(fontSize: 24)),
+        ...currentQuiz.choices.map((choice) => ListTile(
+          title: Text(choice),
+          onTap: () => checkAnswer(choice, currentQuiz.answers),
+        )).toList(),
       ],
     );
   }
 
+  void checkAnswer(String selectedAnswer, List<String> correctAnswers) {
+    if (correctAnswers.contains(selectedAnswer)) {
+      print("정답입니다!");
+    } else {
+      print("오답입니다. 정답은 ${correctAnswers.join(', ')}입니다.");
+    }
+    if (currentQuizIndex < quizzes.length - 1) {
+      updateQuizDisplay(currentQuizIndex + 1);
+    } else {
+      print("퀴즈가 끝났습니다.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    
-    List<QuizItem> quizItems = QuizItem.parseSoundQuizList(quizData as String);
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "발음 퀴즈",
-          style: myStyle.textTheme.labelMedium,
-        ),
-        backgroundColor: Colors.white,
-        foregroundColor: myStyle.mainColor,
+        title: Text("발음 퀴즈"),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
-        child: Column(
-          children: [
-            Text(
-              '2/30',
-              style: myStyle.textTheme.bodyMedium,
-            ),
-            quiz(quizItems[0])
-          ],
-        ),
-      ),
+      body: buildQuizBody(),
     );
   }
 }

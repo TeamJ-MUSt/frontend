@@ -1,0 +1,58 @@
+[
+  {
+    "write" : "僕ら",
+    "read" : "ぼくら, bokura",
+    "class" : "명사",
+    "mean" : "우리들",
+    "include" : ["BETELGEUSE","Pretender"]
+  },
+  {
+    "write" : "空",
+    "read" : "そら, sora",
+    "class" : "명사",
+    "mean" : "하늘",
+    "include" : ["BETELGEUSE","Pretender"]
+  },
+  {
+    "write" : "星",
+    "read" : "ほし, hoshi",
+    "class" : "명사",
+    "mean" : "별",
+    "include" : ["BETELGEUSE","Lemon"]
+  },
+  {
+    "write" : "寄り添る",
+    "read" : "よりそうる, yorisou",
+    "class" : "동사",
+    "mean" : "가까이 다가가다, 근접하다",
+    "include" : ["BETELGEUSE"]
+  },
+  {
+    "write" : "泣く",
+    "read" : "なく, naku",
+    "class" : "동사",
+    "mean" : "울다",
+    "include" : ["BETELGEUSE","KICK BACK"]
+  },
+  {
+    "write" : "世界",
+    "read" : "せかい, sekai",
+    "class" : "명사",
+    "mean" : "세계",
+    "include" : ["Starlight Parade"]
+  },
+  {
+    "write" : "大きい",
+    "read" : "おおきい, sekai",
+    "class" : "형용사",
+    "mean" : "크다",
+    "include" : ["Turquoise"]
+  },
+  {
+    "write" : "いくら",
+    "read" : "いくら, ikura",
+    "class" : "명사 부사",
+    "mean" : "명사",
+    "include" : ["Starlight Parade","Turquoise"]
+  }
+]

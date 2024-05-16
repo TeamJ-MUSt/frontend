@@ -7,7 +7,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:must/View/SearchView/NoDataView.dart';
 import 'package:must/style.dart' as myStyle;
 import '../../data/api_service.dart';
-import '../../data/json2.dart';
+import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
 import '../Widget/SongListWidget.dart';

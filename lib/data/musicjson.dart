@@ -11,6 +11,7 @@ class Song {
   String title;
   String artist;
   String lyrics;
+  String level = "쉬움";
   var thumbnail;
 
   Song({
@@ -18,6 +19,7 @@ class Song {
     required this.artist,
     required this.lyrics,
     required this.songId,
+    required this.level,
     required this.thumbnail,
   });
 
@@ -26,6 +28,7 @@ class Song {
     title: json["title"],
     artist: json["artist"],
     lyrics: json["lyrics"],
+    level: json["level"],
     thumbnail: json["thumbnail"],
   );
 
@@ -35,6 +38,7 @@ class Song {
     "title": title,
     "artist": artist,
     "lyrics": lyrics,
+    "level": level,
     "thumbnail": thumbnail,
   };
 }

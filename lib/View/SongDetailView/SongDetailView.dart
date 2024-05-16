@@ -8,8 +8,9 @@ import 'package:must/style.dart' as myStyle;
 import 'package:must/View/Widget/LearningWidget.dart';
 import 'package:must/View/Widget/SongDetailCardAPI.dart';
 
-import '../../data/json2.dart';
+import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
+import '../LearningView/ReadQuizView.dart';
 
 class SongDetailView extends StatefulWidget {
   SongDetailView({required this.song, required this.thumbnail,super.key});
@@ -80,12 +81,13 @@ class _SongDetailViewState extends State<SongDetailView> {
                     LearningWidget(
                       content: '단어 퀴즈 - 뜻 맞추기',
                       comment: '단어를 보고 한국어 뜻을 골라주세요',
-                      moveTo: MeaningQuizView(),
+                      moveTo: MeaningQuizView(songId: song.songId,),
                     ),
                     LearningWidget(
                       content: '단어 퀴즈 - 발음 맞추기',
                       comment: '단어를 보고 알맞은 발음을 골라주세요',
-                      moveTo: SoundQuizView(),
+                      // moveTo: SoundQuizView(),
+                      moveTo: ReadQuizView(songId: song.songId,),
                     ),
                     LearningWidget(
                       content: '순서맞추기',

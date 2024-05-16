@@ -8,21 +8,19 @@ import 'package:must/style.dart' as myStyle;
 import '../../data/searchJson.dart';
 import '../SongDetailView/SongDetailView.dart';
 
-class SongListWidget extends StatelessWidget {
-  SongListWidget({required this.song, required this.thumbnail, super.key});
+class NoImageSongList extends StatelessWidget {
+  NoImageSongList({required this.song,super.key});
 
   SearchSong song;
-  var thumbnail;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(() => SongDetailView(song: song, thumbnail: thumbnail, ));
       },
       child: Container(
-        width: double.infinity,
         margin: EdgeInsets.symmetric(vertical: 5.h),
+        width: double.infinity,
         height: 45.h,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,9 +30,7 @@ class SongListWidget extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: 50.w,
-                    child: thumbnail != null
-                        ? Image.memory(thumbnail!, width: 50, height: 50)
-                        : Container(width: 50, height: 50, color: Colors.grey),
+                    child: Container(width: 50, height: 50, color: Colors.grey),
                   ),
                   SizedBox(
                     width: 5.w,
