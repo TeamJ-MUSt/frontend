@@ -30,12 +30,15 @@ class _MainViewState extends State<MainView> {
     const HomeView(),
     WordBookView(),
     const BookMarkView(),
-    const MySettingView(),
+    // const MySettingView(),
   ];
 
   @override
   void initState() {
     super.initState();
+    if (_selectedIndex < 0 || _selectedIndex >= _widgetOptions.length) {
+      _selectedIndex = 0; // 기본값으로 초기화
+    }
   }
 
   @override
@@ -82,7 +85,6 @@ class _MainViewState extends State<MainView> {
       Get.to(() => TempSearchView(query:query)); // Navigate only if there are results
     } else {
       print("No results found for the query.");
-      // Optionally, handle no results scenario
     }
     } catch (e) {
       print('Exception caught: $e');
@@ -151,7 +153,7 @@ class _MainViewState extends State<MainView> {
           BottomNavigationBarItem(
               icon: Icon(Icons.sticky_note_2_outlined), label: '단어장'),
           BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: '마크'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '내 설정'),
+          // BottomNavigationBarItem(icon: Icon(Icons.person), label: '내 설정'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: myStyle.mainColor,

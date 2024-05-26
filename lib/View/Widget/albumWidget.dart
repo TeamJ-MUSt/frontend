@@ -1,15 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:must/View/SongDetailView/SongDetailView.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../data/json.dart';
+
+import '../../data/searchJson.dart';
 import '../SongDetailView/SongDetailBasic.dart';
 
 class AlbumWidget extends StatelessWidget {
   AlbumWidget(this.songs, {super.key});
 
-  List<Song> songs;
+  List<SearchSong> songs;
+  var thumbnail = {};
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class AlbumWidget extends StatelessWidget {
               List selectSong = [
                 songs[index].title,
                 songs[index].artist,
-                songs[index].thumbnail,
+                thumbnail,
                 songs[index].lyrics.replaceAll('\n', '\\n'),
               ];
               Get.to(() => SongDetail(musicInfo:selectSong));
@@ -41,8 +46,8 @@ class AlbumWidget extends StatelessWidget {
                     ),
                     width: 95.w,
                     height: 90.h,
-                    child: Image.network(
-                      songs[index].thumbnail,
+                    child: Image.memory(
+                      thumbnail! as Uint8List,
                       fit: BoxFit.fitWidth,
                     ),
                   ),

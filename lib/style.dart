@@ -10,6 +10,7 @@ var textTheme = TextTheme(
     //퀴즈
     titleLarge : TextStyle(fontSize: 26.sp, fontFamily: 'NotoSansCJK',color: Colors.black),
     titleMedium: TextStyle(fontSize: 19.sp, fontFamily: 'NotoSansCJK',color: Colors.black),
+    titleSmall: TextStyle(fontSize: 16.sp, fontFamily: 'NotoSansCJK',color: Colors.black),
 
     headlineLarge: TextStyle(fontSize: 16.sp,fontFamily: 'NotoSansCJK',fontWeight: FontWeight.w600,color: Colors.white),
     headlineMedium: TextStyle(fontSize: 15.sp,fontFamily: 'NotoSansCJK',color: Colors.white),

@@ -11,7 +11,7 @@ class Song {
   String title;
   String artist;
   String lyrics;
-  String level = "쉬움";
+  int level;
   var thumbnail;
 
   Song({

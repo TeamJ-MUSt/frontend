@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/View/LearningView/MeaningQuizView.dart';
 import 'package:must/View/LearningView/SequenceQuizView.dart';
-import 'package:must/View/LearningView/SoundQuizView.dart';
 import 'package:must/View/WordBookView/WordBookView.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:must/View/Widget/LearningWidget.dart';
 import 'package:must/View/Widget/SongDetailCard.dart';
+
+import '../LearningView/ReadQuizView.dart';
 
 class SongDetail extends StatefulWidget {
   SongDetail({required this.musicInfo, super.key});
@@ -73,15 +74,15 @@ class _SongDetailState extends State<SongDetail> {
                       comment: '노래에 등장하는 단어들을 확인합니다',
                       moveTo: WordBookView(),
                     ),
-                    LearningWidget(
-                      content: '단어 퀴즈 - 뜻 맞추기',
-                      comment: '단어를 보고 한국어 뜻을 골라주세요',
-                      moveTo: MeaningQuizView(songId: 1,),
-                    ),
+                    // LearningWidget(
+                    //   content: '단어 퀴즈 - 뜻 맞추기',
+                    //   comment: '단어를 보고 한국어 뜻을 골라주세요',
+                    //   moveTo: MeaningQuizView(songId: 1,),
+                    // ),
                     LearningWidget(
                       content: '단어 퀴즈 - 발음 맞추기',
                       comment: '단어를 보고 알맞은 발음을 골라주세요',
-                      moveTo: SoundQuizView(),
+                      moveTo: ReadQuizView(songId: 1, setNum: 1,),
                     ),
                     LearningWidget(
                       content: '순서맞추기',

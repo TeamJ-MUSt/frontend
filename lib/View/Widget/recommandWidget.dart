@@ -8,7 +8,7 @@ class RecommandWidget extends StatelessWidget {
   RecommandWidget({super.key, required this.title, required this.artist, required this.thumbnail});
   final String title;
   final String artist;
-  final String thumbnail;
+  var thumbnail;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class RecommandWidget extends StatelessWidget {
       height: 50.h,
       child: Row(
         children: [
-          SizedBox(width: 70.w, child: Image.network(thumbnail),),
+          SizedBox(width: 70.w, child: Image.memory(thumbnail),),
           SizedBox(width: 5.w,),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

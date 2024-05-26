@@ -19,6 +19,7 @@ class SearchSong {
   String title;
   String artist;
   String lyrics;
+  final int? level; // 수정: level을 nullable로 변경
   var thumbnail = Null;
 
   SearchSong({
@@ -26,6 +27,7 @@ class SearchSong {
     required this.title,
     required this.artist,
     required this.lyrics,
+    required this.level,
     required thumbnail,
   });
 
@@ -34,6 +36,7 @@ class SearchSong {
     title: json["title"],
     artist: json["artist"],
     lyrics: json["lyrics"],
+    level: json["level"],
     thumbnail: json["thumbnail"],
   );
 
@@ -43,5 +46,6 @@ class SearchSong {
     "title": title,
     "artist": artist,
     "lyrics": lyrics,
+    "level": level,
   };
 }

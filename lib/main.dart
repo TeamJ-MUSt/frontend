@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:must/View/LearningView/SoundQuizView.dart';
-import 'package:must/View/LoginView.dart';
 import './style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'View/mainView.dart';

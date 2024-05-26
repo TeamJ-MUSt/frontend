@@ -1,7 +1,7 @@
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/style.dart' as myStyle;
 
@@ -11,14 +11,17 @@ import '../SongDetailView/SongDetailView.dart';
 class SongListWidget extends StatelessWidget {
   SongListWidget({required this.song, required this.thumbnail, super.key});
 
-  SearchSong song;
-  var thumbnail;
+  final SearchSong song;
+  final Uint8List? thumbnail; // 수정: Uint8List? 타입으로 변경
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(() => SongDetailView(song: song, thumbnail: thumbnail, ));
+        Get.to(() => SongDetailView(
+          song: song,
+          thumbnail: thumbnail,
+        ));
       },
       child: Container(
         width: double.infinity,
@@ -73,7 +76,6 @@ class SongListWidget extends StatelessWidget {
                 Container(
                   height: 15.h,
                   width: 40.w,
-                  // color: myStyle.mainColor,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
@@ -84,7 +86,13 @@ class SongListWidget extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      "어려움",
+                      song.level != null
+                          ? song.level == 1
+                          ? "쉬움"
+                          : song.level == 2
+                          ? "보통"
+                          : "어려움"
+                          : "알 수 없음", // 수정: level이 null일 경우 대비
                       style: TextStyle(color: Colors.white, fontSize: 12.sp),
                     ),
                   ),

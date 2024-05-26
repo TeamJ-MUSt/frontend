@@ -11,8 +11,9 @@ import '../../data/api_service.dart';
 import '../../data/MeaningQuizParsing.dart';
 
 class ReadQuizView extends StatefulWidget {
-  ReadQuizView({required this.songId, super.key});
-  int songId;
+  ReadQuizView({required this.songId, required this.setNum, super.key});
+  final int songId;
+  final int setNum;
   @override
   State<ReadQuizView> createState() => _ReadQuizViewState();
 }
@@ -20,7 +21,7 @@ class ReadQuizView extends StatefulWidget {
 class _ReadQuizViewState extends State<ReadQuizView> {
 
   List<ReadQuiz> quizzes = []; //퀴즈 리스트
-  int currentQuizIndex = 0; //현재 퀴즈 번호
+  int currentQuizIndex = 1; //현재 퀴즈 번호
   late String question; //문제
   late String answers; //답
   late List<String> choices; // 보기
@@ -44,30 +45,32 @@ class _ReadQuizViewState extends State<ReadQuizView> {
     submitButtonColor = myStyle.basicGray; // 초기 버튼 색상
     loadQuizData(); // 퀴즈 데이터 로드
   }
+
   void loadQuizData() async {
-    try {
-      // String jsonString = await notAPIMeanQuizData();
-      quizzes = await fetchReadQuizData();  // 클래스 레벨의 quizzes를 직접 업데이트
-      print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
-      if (quizzes.isNotEmpty) {
-        quizzes.forEach((quiz) {
-          // answers를 choices에 추가하고 랜덤으로 섞습니다.
-          quiz.choices.add(quiz.answers[0]);
-          quiz.choices.shuffle(Random());
-        });
-        updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
-      } else {
-        print('Quiz data is empty');
+    await getQuiz(); // 퀴즈 데이터 로드
+    setState(() {}); // 상태 업데이트
+  }
+
+
+  Future<void> getQuiz() async {
+    quizzes = await getReadQuizSet(widget.setNum, widget.songId);  // 클래스 레벨의 quizzes를 직접 업데이트
+    print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
+    if (quizzes.isNotEmpty) {
+      for (var quiz in quizzes) {
+        // answers를 choices에 추가하고 랜덤으로 섞습니다.
+        quiz.choices.add(quiz.answers[0]);
+        quiz.choices.shuffle(Random());
       }
-    } catch (e) {
-      print('Error loading quiz data: $e');
+      updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
+    } else {
+      print('Quiz data is empty');
     }
   }
 
   void updateQuizDisplay(int index) {
-    if (quizzes.isNotEmpty) {  // 리스트가 비어 있지 않은지 확인
+    if (quizzes.isNotEmpty) {   // 리스트가 비어 있지 않은지 확인
       setState(() {
-        currentQuizIndex = index;
+        currentQuizIndex = index+1;
         question = quizzes[index].word;
         choices = quizzes[index].choices;
         answers = quizzes[index].answers[0];
@@ -95,15 +98,14 @@ class _ReadQuizViewState extends State<ReadQuizView> {
         correctCnt++;
       } else {
         resultMessage = '오답입니다. 정답: ${answers}';
-        submitButtonColor = myStyle.mainColor; // Assuming you have a color set for errors
+        submitButtonColor = myStyle.mainColor;
       }
 
-      // Always allow moving to the next question after a submission
       if (currentQuizIndex < quizzes.length - 1) {
         submitMent = "다음으로";
       } else {
         submitMent = "퀴즈 끝";
-        end = true; // It's the last quiz
+        end = true;
       }
     });
   }
@@ -165,6 +167,10 @@ class _ReadQuizViewState extends State<ReadQuizView> {
             '$currentQuizIndex'+'/'+ quizzes.length.toString(),
             style: myStyle.textTheme.bodyMedium,
           ),
+          Text(
+            '정답 개수 : ' + correctCnt.toString(),
+            style: myStyle.textTheme.bodySmall,
+          ),
           Expanded(
             flex: 2,
             child: Center(
@@ -176,8 +182,6 @@ class _ReadQuizViewState extends State<ReadQuizView> {
                     question,
                     style: myStyle.textTheme.titleLarge,
                   ),
-                  // Text(read, style: myStyle.textTheme.titleMedium,) // 후리가나
-
                 ],
               ),
             ),
@@ -211,7 +215,7 @@ class _ReadQuizViewState extends State<ReadQuizView> {
                     onTap: () {
                       if (submitMent == "다음으로" || submitMent == "퀴즈 끝") {
                         if (currentQuizIndex < quizzes.length - 1) {
-                          updateQuizDisplay(currentQuizIndex + 1); // Move to the next question
+                          updateQuizDisplay(currentQuizIndex); // Move to the next question
                         } else {
                           Get.offAll(()=>QuizEndView(correctCnt: correctCnt,));
                         }

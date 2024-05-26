@@ -9,26 +9,32 @@ List<Word> wordFromJson(String str) => List<Word>.from(json.decode(str).map((x) 
 String wordToJson(List<Word> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Word {
-  String write;
-  String read;
-  String wordClass;
-  String mean;
-  List<String> include;
+  int id;
+  String spell;
+  String enPro;
+  String japPro;
+  String classOfWord;
+  List<String> meaning;
+  List<String> involvedSongs;
 
   Word({
-    required this.write,
-    required this.read,
-    required this.wordClass,
-    required this.mean,
-    required this.include,
+    required this.id,
+    required this.spell,
+    required this.enPro,
+    required this.japPro,
+    required this.classOfWord,
+    required this.meaning,
+    required this.involvedSongs,
   });
 
   factory Word.fromJson(Map<String, dynamic> json) => Word(
-    write: json["write"],
-    read: json["read"],
-    wordClass: json["class"],
-    mean: json["mean"],
-    include: List<String>.from(json["include"].map((x) => x)),
+    id: json["id"],
+    spell: json["spell"],
+    enPro: json["enPro"],
+    japPro: json["japPro"],
+    classOfWord: json["classOfWord"],
+    meaning: List<String>.from(json["meaning"].map((x) => x)),
+    involvedSongs: List<String>.from(json["involvedSongs"].map((x) => x)),
   );
 
   static List<Word> parseUserList(String jsonString) {
@@ -38,10 +44,12 @@ class Word {
   }
 
   Map<String, dynamic> toJson() => {
-    "write": write,
-    "read": read,
-    "class": wordClass,
-    "mean": mean,
-    "include": List<dynamic>.from(include.map((x) => x)),
+    "id": id,
+    "spell": spell,
+    "enPro": enPro,
+    "japPro": japPro,
+    "classOfWord": classOfWord,
+    "meaning": List<dynamic>.from(meaning.map((x) => x)),
+    "involvedSongs": List<dynamic>.from(involvedSongs.map((x) => x)),
   };
 }

@@ -2,28 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/View/LearningView/MeaningQuizView.dart';
 import 'package:must/View/LearningView/SequenceQuizView.dart';
-import 'package:must/View/LearningView/SoundQuizView.dart';
+import 'package:must/View/Widget/MeaningQuizSetWidget.dart';
 import 'package:must/View/WordBookView/WordBookView.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:must/View/Widget/LearningWidget.dart';
 import 'package:must/View/Widget/SongDetailCardAPI.dart';
 
-import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../LearningView/ReadQuizView.dart';
+import '../Widget/ReadQuizSetWidget.dart';
 
 class SongDetailView extends StatefulWidget {
-  SongDetailView({required this.song, required this.thumbnail,super.key});
+  SongDetailView({required this.song, required this.thumbnail, super.key});
 
   SearchSong song;
   var thumbnail;
 
   @override
-  State<SongDetailView> createState() => _SongDetailViewState(song: song, thumbnail: thumbnail);
+  State<SongDetailView> createState() =>
+      _SongDetailViewState(song: song, thumbnail: thumbnail);
 }
 
 class _SongDetailViewState extends State<SongDetailView> {
   _SongDetailViewState({required this.song, required this.thumbnail});
+
   SearchSong song;
   var thumbnail;
   bool _isChecked = false;
@@ -39,7 +41,10 @@ class _SongDetailViewState extends State<SongDetailView> {
         padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
         child: Column(
           children: [
-            SongDetailCardAPI(song: song,thumbnail: thumbnail,),
+            SongDetailCardAPI(
+              song: song,
+              thumbnail: thumbnail,
+            ),
             SizedBox(
               height: 10.h,
             ),
@@ -58,7 +63,7 @@ class _SongDetailViewState extends State<SongDetailView> {
                       value: _isChecked,
                       onChanged: (value) {
                         setState(
-                              () {
+                          () {
                             _isChecked = value;
                           },
                         );
@@ -78,26 +83,31 @@ class _SongDetailViewState extends State<SongDetailView> {
                       comment: '노래에 등장하는 단어들을 확인합니다',
                       moveTo: WordBookView(),
                     ),
-                    LearningWidget(
-                      content: '단어 퀴즈 - 뜻 맞추기',
-                      comment: '단어를 보고 한국어 뜻을 골라주세요',
-                      moveTo: MeaningQuizView(songId: song.songId,),
-                    ),
-                    LearningWidget(
+                    QuizSetWidget(
+                        content: '단어 퀴즈 - 뜻 맞추기',
+                        comment: '단어를 보고 한국어 뜻을 골라주세요',
+                        songId: song.songId,),
+                    ReadQuizSetWidget(
                       content: '단어 퀴즈 - 발음 맞추기',
                       comment: '단어를 보고 알맞은 발음을 골라주세요',
-                      // moveTo: SoundQuizView(),
-                      moveTo: ReadQuizView(songId: song.songId,),
-                    ),
+                        songId: song.songId,),
+
                     LearningWidget(
                       content: '순서맞추기',
                       comment: '뜻을 보고 문장의 순서를 맞춰주세요',
                       moveTo: SequenceQuizView(),
                     ),
-                    Text("가사",style: myStyle.textTheme.bodyLarge,),
+                    Text(
+                      "가사",
+                      style: myStyle.textTheme.bodyLarge,
+                    ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),
-                      child: Text(song.lyrics.replaceAll('\\n', '\n'), style: TextStyle(fontSize: 13.sp, height: 1.5),),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),
+                      child: Text(
+                        song.lyrics.replaceAll('\\n', '\n'),
+                        style: TextStyle(fontSize: 13.sp, height: 1.5),
+                      ),
                     ),
                   ],
                 ),

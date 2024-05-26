@@ -1,13 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:must/View/Widget/SongListSmall.dart';
 import 'package:must/View/Widget/SongListWidget.dart';
-import 'package:must/View/Widget/noImageSongList.dart';
-import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/api_service.dart';
-import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 
 class LevelView extends StatefulWidget {

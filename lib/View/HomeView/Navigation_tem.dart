@@ -1,18 +1,60 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:must/View/Widget/recommandWidget.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../data/json.dart';
-import '../../data/jsondata.dart';
+import '../../data/api_service.dart';
+import '../../data/searchJson.dart';
+import '../SongDetailView/SongDetailBasic.dart';
 import '../Widget/albumWidget.dart';
 
-class NavigationTem extends StatelessWidget {
+
+
+class NavigationTem extends StatefulWidget {
   const NavigationTem({super.key});
 
   @override
+  State<NavigationTem> createState() => _NavigationTemState();
+}
+
+class _NavigationTemState extends State<NavigationTem> {
+  List<SearchSong> songs = [];
+  Map<int, Uint8List> thumbnails = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSongsAndThumbnails();
+  }
+
+  Future<void> fetchSongsAndThumbnails() async {
+    try {
+      songs = await fetchSongData();
+      print('fetch end');
+      for (var song in songs) {
+        if (song.songId != null) { //노래 데이터를 찾으면 썸네일을 가져옵니다
+          Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
+          if (thumbnail != null) {
+            thumbnails[song.songId] = thumbnail; // Correct key to songId
+            print('Thumbnail for song ID ${song.songId} fetched');
+          }
+        } else {
+          print('no song id!');
+        }
+      }
+      setState(() {}); // Refresh UI with fetched data
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<Song> songs = Song.parseUserList(jsonString);
+    // List<Song> songs = Song.parseUserList(jsonString);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 15.w),
       child: Column(
@@ -51,7 +93,7 @@ class NavigationTem extends StatelessWidget {
                           RecommandWidget(
                               title: songs[0].title,
                               artist: songs[0].artist,
-                              thumbnail: songs[0].thumbnail)
+                              thumbnail: thumbnails[songs[0].songId])
                         ],
                       ),
                     ),
@@ -92,10 +134,56 @@ class NavigationTem extends StatelessWidget {
             height: 5.h,
           ),
           Expanded(
-            child: Container(
+            child : GridView.builder(
+                itemCount: songs.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: (5 / 7),
+                  crossAxisSpacing: 3.w,
+                ),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      List selectSong = [
+                        songs[index].title,
+                        songs[index].artist,
+                        thumbnails,
+                        songs[index].lyrics.replaceAll('\n', '\\n'),
+                      ];
+                      Get.to(() => SongDetail(musicInfo:selectSong));
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            width: 95.w,
+                            height: 90.h,
+                            child: Image.memory(
+                              thumbnails! as Uint8List,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                          Text(
+                            songs[index].title,
+                            style: myStyle.textTheme.labelLarge,
+                          ),
+                          Text(
+                            songs[index].artist,
+                            style: myStyle.textTheme.displaySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                })
+            // child: Container(
               // color: Colors.black,
-              child: AlbumWidget(songs),
-            ),
+              // child: AlbumWidget(songs),
+            // ),
           )
         ],
       ),

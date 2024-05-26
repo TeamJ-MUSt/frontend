@@ -1,17 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/style.dart' as myStyle;
+import 'dart:convert';
+import '../../data/SeqQuizJson.dart';
+import '../../data/api_service.dart';
 
-class SequenceQuizView extends StatelessWidget {
-  const SequenceQuizView({super.key});
+class SequenceQuizView extends StatefulWidget {
+  @override
+  _SequenceQuizViewState createState() => _SequenceQuizViewState();
+}
+
+class _SequenceQuizViewState extends State<SequenceQuizView> {
+  List<SeqQuiz> quizzes = [];
+  int currentQuizIndex = 0;
+  List<String> selectedWords = [];
+  bool isCorrect = false;
+  bool isSubmit = false;
+  String submitMent = '제출하기'; // 제출멘트
+  Color submitButtonColor = myStyle.basicGray; // 선택버튼색
+  String resultText = "";
+
+
+  @override
+  void initState() {
+    super.initState();
+    loadQuizData().then((data) {
+      setState(() {
+        quizzes = data;
+      });
+    }).catchError((error) {
+      print(error);
+    });
+  }
+
+  void selectWord(String word) {
+    setState(() {
+      if (selectedWords.contains(word)) {
+        selectedWords.remove(word);
+      } else {
+        selectedWords.add(word);
+      }
+      if (selectedWords.length == quizzes[currentQuizIndex].options.length) {
+        submitButtonColor = myStyle.mainColor;
+      } else {
+        submitButtonColor = myStyle.basicGray;
+      }
+    });
+  }
+
+  void submitAnswer() {
+    setState(() {
+      isSubmit = true;
+      if (selectedWords.join('') == quizzes[currentQuizIndex].answer) {
+        isCorrect = true;
+        submitButtonColor = myStyle.pointColor;
+        submitMent = "다음으로";
+      } else {
+        isCorrect = false;
+        submitButtonColor = myStyle.mainColor;
+      }
+    });
+  }
+
+  void resetSelection() {
+    setState(() {
+      selectedWords.clear();
+      isSubmit = false;
+      submitButtonColor = myStyle.basicGray;
+    });
+  }
+
+  void nextQuiz() {
+    setState(() {
+      if (currentQuizIndex < quizzes.length - 1) {
+        currentQuizIndex++;
+        selectedWords.clear();
+        isCorrect = false;
+        isSubmit = false;
+        submitMent = "제출하기";
+        submitButtonColor = myStyle.basicGray;
+        resultText = "";
+      } else {
+        // 마지막 퀴즈를 완료했을 때의 동작을 정의할 수 있습니다.
+        print("마지막 퀴즈입니다.");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (quizzes.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Quiz'),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final currentQuiz = quizzes[currentQuizIndex];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "순서 퀴즈",
+          "문장 만들기 퀴즈",
           style: myStyle.textTheme.labelMedium,
         ),
         backgroundColor: Colors.white,
@@ -20,28 +115,132 @@ class SequenceQuizView extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              '2/30',
+              '${currentQuizIndex + 1}/${quizzes.length}',
               style: myStyle.textTheme.bodyMedium,
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Center(
                 // color: myStyle.mainColor,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("일본어"),
+                    Text(
+                      currentQuiz.meaning,
+                      style: myStyle.textTheme.titleMedium,
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Text(
+                      selectedWords.join(' '),
+                      style: myStyle.textTheme.titleMedium,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+           if(isSubmit == true) Text(isCorrect ? "정답입니다" : "오답입니다"),
+            Text(
+              resultText,
+              style: myStyle.textTheme.titleSmall,
+            ),
+            Expanded(
+              flex: 3,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Wrap(
+                      spacing: 8.0,
+                      children: currentQuiz.options.map((word) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            selectWord(word);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: selectedWords.contains(word)
+                                ? Colors.black
+                                : Colors.white,
+                            backgroundColor: selectedWords.contains(word)
+                                ? myStyle.basicGray
+                                : myStyle.mainColor,
+                            elevation:
+                            0, // ChoiceChip과 비슷한 느낌을 주기 위해 그림자를 제거합니다.
+                          ),
+                          child: Text(
+                            word,
+                            style: TextStyle(
+                              color: selectedWords.contains(word)
+                                  ? Colors.black
+                                  : Colors.white,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
 
                   ],
                 ),
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                color: myStyle.basicGray,
+            SizedBox(height: 20),
+
+            if (isSubmit && !isCorrect)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      resultText = '정답 : ${quizzes[currentQuizIndex].answer}';
+                      submitMent = "다음으로";
+                      submitButtonColor = myStyle.mainColor;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    decoration: BoxDecoration(
+                      color: myStyle.mainColor,
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '정답확인하기',
+                        style: myStyle.textTheme.headlineMedium,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
+              child: InkWell(
+                onTap: () {
+                  if (submitMent == "제출하기") {
+                    if (selectedWords.length == currentQuiz.options.length) {
+                      submitAnswer();
+                    }
+                  } else if (submitMent == "다음으로") {
+                    nextQuiz();
+                  }
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10.h),
+                  decoration: BoxDecoration(
+                    color: submitButtonColor,
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      submitMent,
+                      style: myStyle.textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
@@ -7,11 +8,19 @@ import 'package:must/data/searchJson.dart';
 import 'package:must/data/wordJson.dart';
 import 'dart:convert';
 import 'ReadingQuizParsing.dart';
+import 'SeqQuizJson.dart';
 import 'musicjson.dart';
 
 String ip ='222.108.102.12:9090';
 Uint8List decodeBase64(String base64String) {
   return base64.decode(base64String);
+}
+
+class quizSet {
+  final bool success;
+  final int setNum;
+
+  quizSet(this.success, this.setNum);
 }
 
 // 노래를 등록합니다
@@ -118,31 +127,15 @@ Future<List<SearchSong>> totalSearchSongData(String? query) async {
     throw Exception('Failed to process request: $e'); // Ensure you throw an exception here
   }
 }
+//뜻퀴즈
+// 퀴즈 로직 :: 세트 조회 , 몇개 세트
+//http://222.108.102.12:9090/quiz/MEANING/set/1?songId=1
+// 퀴즈 조회
+//세트 개수 조회  http://222.108.102.12:9090/quiz/info?songId=1&type=MEANING
 
-//퀴즈를 생성합니다
-Future<bool> creatingMeanQuiz(int songId) async {
-  String preurl = 'http://${ip}/quiz/create?songId=${songId}&type=MEANING';
-  var url = Uri.parse(preurl);
-  try {
-    var response = await http.post(url);
-    if (response.statusCode == 200) {
-      var checkBody = jsonDecode(utf8.decode(response.bodyBytes));
-      // Potentially do something with the decoded body
-      print('Quiz initialized: ${utf8.decode(response.bodyBytes)}');
-      return checkBody['success'];
-    } else {
-      print('Failed with status code: ${response.statusCode}');
-    }
-  } catch (e, s) {
-    print('Failed to make request for quiz: $e');
-    print('Stack Trace: $s');
-  }
-  return false;
-}
-
-//퀴즈를 조회합니다
-Future<List<MeanQuiz>> fetchMeanQuizData2(int songId) async {
-  var url = Uri.parse('http://${ip}/quiz?songId=${songId}&type=MEANING');
+//퀴즈를 가져옵니다/quiz/MEANING/set/1?songId=1
+Future<List<MeanQuiz>> getMeanQuizSet(int setNum, int songId) async {
+  var url = Uri.parse('http://${ip}/quiz/MEANING/set/${setNum}?songId=${songId}');
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
@@ -156,38 +149,56 @@ Future<List<MeanQuiz>> fetchMeanQuizData2(int songId) async {
     throw Exception('Failed to fetch data: $e');
   }
 }
-//퀴즈를 조회합니다 :: 조회가..아예 안되면 어떡하지
-Future<int> fetchMeanQuizData(int songId) async {
-  var url = Uri.parse('http://${ip}/quiz?songId=${songId}&type=MEANING');
-  print(url);
+
+//퀴즈를 조회합니다 - 조회 가능한지 여부, 리스트 개수
+Future<quizSet> fetchMeanQuizData(int songId) async {
+  var url = Uri.parse('http://${ip}/quiz/info?songId=${songId}&type=MEANING');
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var checkBody = jsonDecode(utf8.decode(response.bodyBytes));
-      print('Quiz initialized: ${utf8.decode(response.bodyBytes)}');
-      print(checkBody['success']);
-      return checkBody['success'] ? 1 : 0;
+      // quizSet = ;
+      bool success = checkBody['success'];
+      int setNum = checkBody['setNum'];
+      return quizSet(success, setNum);
     } else {
       print('Failed with status code: ${response.statusCode}');
-      return -1;
+      return quizSet(false, -1);
     }
   } catch (e, s) {
     print('Failed to make request for quiz: $e');
     print('Stack Trace: $s');
-    return 100;
+    return quizSet(false, -2);
   }
 }
+// 퀴즈 이후 단어장 보내기
+Future saveWord(int memberId, int songId) async {
+  var url = Uri.parse('http://${ip}/word-book/new?memberId=${memberId}?songId=${songId}');
+  try {
+    var response = await http.post(url);
+    if (response.statusCode == 200) {
+      var decodedBody = utf8.decode(response.bodyBytes);
+      return meanQuizFromJson(decodedBody);  // Ensure this function is defined correctly
+    } else {
+      throw Exception('Failed to load quiz data with status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Failed to fetch data: $e');
+    throw Exception('Failed to fetch data: $e');
+  }
+}
+//-------------------------
 
-
-Future<List<ReadQuiz>> fetchReadQuizData() async {
-  var url = Uri.parse('http://${ip}/quiz?songId=1&type=READING');
+//퀴즈를 가져옵니다/quiz/MEANING/set/1?songId=1
+Future<List<ReadQuiz>> getReadQuizSet(int setNum, int songId) async {
+  var url = Uri.parse('http://${ip}/quiz/READ/set/${setNum}?songId=${songId}');
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
-      return readQuizFromJson(decodedBody);
+      return readQuizFromJson(decodedBody);  // Ensure this function is defined correctly
     } else {
-      throw Exception('Failed to load quiz data');
+      throw Exception('Failed to load quiz data with status code: ${response.statusCode}');
     }
   } catch (e) {
     print('Failed to fetch data: $e');
@@ -195,17 +206,28 @@ Future<List<ReadQuiz>> fetchReadQuizData() async {
   }
 }
 
-// Future<List<MeanQuiz>> notAPIMeanQuizData() async {
-//   try {
-//     // assets 폴더에 저장된 quizData.json 파일에서 JSON 문자열 읽기
-//     String jsonString = await rootBundle.loadString('assets/quizData.json');
-//     // JSON 문자열을 Dart 객체로 파싱
-//     return MeanQuiz.meanQuizFromJson(jsonString);
-//   } catch (e) {
-//     print('Error loading quiz data: $e');
-//     throw Exception('Failed to load quiz data');
-//   }
-// }
+//퀴즈를 조회합니다 -
+Future<quizSet> fetchReadQuizData(int songId) async {
+  var url = Uri.parse('http://${ip}/quiz/info?songId=${songId}&type=READ');
+  try {
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var checkBody = jsonDecode(utf8.decode(response.bodyBytes));
+      // quizSet = ;
+      bool success = checkBody['success'];
+      int setNum = checkBody['setNum'];
+      return quizSet(success, setNum);
+    } else {
+      print('Failed with status code: ${response.statusCode}');
+      return quizSet(false, -1);
+    }
+  } catch (e, s) {
+    print('Failed to make request for quiz: $e');
+    print('Stack Trace: $s');
+    return quizSet(false, -2);
+  }
+}
+
 
 Future<List<Word>> notAPIWordData() async {
   try {
@@ -218,3 +240,38 @@ Future<List<Word>> notAPIWordData() async {
     throw Exception('Failed to load quiz data');
   }
 }
+
+//순서퀴즈 조회
+Future<List<SeqQuiz>> loadQuizData() async {
+  try {
+    String jsonString = await rootBundle.loadString('assets/seqQuizData.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+    return jsonData.map((item) {
+      final quiz = SeqQuiz.fromJson(item);
+      quiz.options.shuffle(Random());
+      return quiz;
+    }).toList();
+  } catch (e) {
+    print('Error loading quiz data: $e');
+    throw Exception('Failed to load quiz data');
+  }
+}
+// 단어장 조회
+Future<List<Word>> getWordbook(int memberId) async {
+  var url = Uri.parse('http://${ip}/wordbook/${memberId}');
+  try {
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var decodedBody = utf8.decode(response.bodyBytes);
+      return Word.parseUserList(decodedBody);  // Ensure this function is defined correctly
+    } else {
+      throw Exception('Failed to load quiz data with status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Failed to fetch data: $e');
+    throw Exception('Failed to fetch data: $e');
+  }
+}
+
+//유사단어 조회
+

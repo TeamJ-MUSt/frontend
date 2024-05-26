@@ -1,34 +1,56 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/utils.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:must/View/EnrollView/PerformEnroll.dart';
-import 'package:must/View/SongDetailView/SongDetailView.dart';
 import 'package:must/style.dart' as myStyle;
-
-import '../../data/api_service.dart';
-import '../../data/searchJson.dart';
-import '../mainView.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuizEndView extends StatelessWidget {
-  QuizEndView({required this.correctCnt, super.key});
-  int correctCnt;
+  final int correctCnt;
+
+  QuizEndView({required this.correctCnt});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "퀴즈 결과",
+          style: myStyle.textTheme.labelMedium,
+        ),
         backgroundColor: Colors.white,
         foregroundColor: myStyle.mainColor,
       ),
       body: Center(
-        child: InkWell(
-            onTap:(){
-              Get.offAll(() => MainView());
-            },
-            child: Text("맞은 개수는 ${correctCnt.toString()}개 입니다", style: myStyle.textTheme.bodyMedium,)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.h),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '퀴즈를 완료했습니다!',
+                style: myStyle.textTheme.titleLarge,
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                '맞은 개수: $correctCnt',
+                style: myStyle.textTheme.headlineMedium,
+              ),
+              SizedBox(height: 40.h),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back(); // 이전 화면으로 돌아가기
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: myStyle.mainColor,
+                ),
+                child: Text(
+                  '돌아가기',
+                  style: myStyle.textTheme.labelMedium,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
