@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:must/View/SearchView/TempSearchView.dart';
+import 'package:must/View/LearningView/SequenceQuizView.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../data/api_service.dart';
@@ -10,6 +10,7 @@ import '../data/searchJson.dart';
 import 'BookMarkView.dart';
 import 'HomeView/HomeView.dart';
 import 'MySettingView.dart';
+import 'SearchView/SearchView.dart';
 import 'WordBookView/WordBookView.dart';
 
 class MainView extends StatefulWidget {
@@ -29,7 +30,7 @@ class _MainViewState extends State<MainView> {
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
     WordBookView(),
-    const BookMarkView(),
+    SequenceQuizView(songId: 1, setNum: 1),
     // const MySettingView(),
   ];
 
@@ -64,7 +65,9 @@ class _MainViewState extends State<MainView> {
     if (_searchQueryController.text.isNotEmpty) {
       String query = _searchQueryController.text;
       print("query is $query");
-      Get.to(()=>TempSearchView(query:query));
+      Get.to(()=>SearchView(query:query));
+      //변경 전 검색등록
+      // Get.to(()=>TempSearchView(query:query));
     } else {
       // TextField가 비어있다면 포커스를 줍니다.
       print("empty");
@@ -82,7 +85,7 @@ class _MainViewState extends State<MainView> {
       print("search result $_songs}");
     });
     if (_songs.isNotEmpty) {
-      Get.to(() => TempSearchView(query:query)); // Navigate only if there are results
+      Get.to(() => SearchView(query:query)); // Navigate only if there are results
     } else {
       print("No results found for the query.");
     }

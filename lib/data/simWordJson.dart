@@ -28,11 +28,6 @@ class SimWord {
     meaning: List<String>.from(json["meaning"].map((x) => x)),
   );
 
-  static List<SimWord> parseUserList(String jsonString) {
-
-    final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
-    return parsed.map<SimWord>((json) => SimWord.fromJson(json)).toList();
-  }
 
   Map<String, dynamic> toJson() => {
     "spell": spell,
@@ -40,4 +35,16 @@ class SimWord {
     "classOfWord": classOfWord,
     "meaning": List<dynamic>.from(meaning.map((x) => x)),
   };
+
+  static List<SimWord> parseSimWordList(String jsonString) {
+    final parsedJson = json.decode(jsonString);
+    if (parsedJson['success']==true) {
+      final simWordsList = parsedJson['similarWordDtoList'] as List<dynamic>;
+      return simWordsList.map<SimWord>((json)=>SimWord.fromJson(json as Map<String, dynamic>)).toList();
+    }else {
+
+      throw Exception('Failed to load words: API returned success=false');
+
+    }
+  }
 }

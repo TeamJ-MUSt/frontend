@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../data/bookmark_controller.dart';
 import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 
@@ -12,6 +13,7 @@ class SongDetailCardAPI extends StatelessWidget {
 
   SearchSong song;
   var thumbnail;
+  final BookmarkController bookmarkController = Get.put(BookmarkController());
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +47,31 @@ class SongDetailCardAPI extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "level",
+                  Container(
+                    height: 15.h,
+                    width: 40.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: song.level != null
+                          ? song.level == 1
+                          ? Colors.green
+                          : song.level == 2
+                          ? myStyle.pointColor
+                          : myStyle.mainColor
+                          : myStyle.basicGray,
+                    ),
+                    child: Center(
+                      child: Text(
+                        song.level != null
+                            ? song.level == 1
+                            ? "쉬움"
+                            : song.level == 2
+                            ? "보통"
+                            : "어려움"
+                            : "알 수 없음",
+                        style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                      ),
+                    ),
                   ),
                   Text(
                     song.title,
@@ -60,13 +85,20 @@ class SongDetailCardAPI extends StatelessWidget {
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(
-              Icons.bookmark_border_outlined,
-              size: 25.h,
-              color: myStyle.mainColor,
-            ),
-            onPressed: () {},
+          InkWell(
+            onTap: () {
+              bookmarkController.toggleBookmark(song.songId);
+            },
+            child: Obx(() {
+              bool isBookmarked = bookmarkController.isBookmarked(song.songId);
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
+                child: Icon(
+                  isBookmarked ? Icons.bookmark : Icons.bookmark_border_outlined,
+                  color: isBookmarked ? myStyle.mainColor : myStyle.mainColor,
+                ),
+              );
+            }),
           ),
         ],
       ),

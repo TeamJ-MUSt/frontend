@@ -33,7 +33,7 @@ class QuizEndView extends StatelessWidget {
               SizedBox(height: 20.h),
               Text(
                 '맞은 개수: $correctCnt',
-                style: myStyle.textTheme.headlineMedium,
+                style: myStyle.textTheme.labelMedium,
               ),
               SizedBox(height: 40.h),
               ElevatedButton(
@@ -41,11 +41,11 @@ class QuizEndView extends StatelessWidget {
                   Get.back(); // 이전 화면으로 돌아가기
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: myStyle.mainColor,
+                  backgroundColor: myStyle.mainColor,
                 ),
                 child: Text(
                   '돌아가기',
-                  style: myStyle.textTheme.labelMedium,
+                  style: myStyle.textTheme.displaySmall,
                 ),
               ),
             ],

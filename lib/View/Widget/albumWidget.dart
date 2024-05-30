@@ -14,7 +14,7 @@ class AlbumWidget extends StatelessWidget {
   AlbumWidget(this.songs, {super.key});
 
   List<SearchSong> songs;
-  var thumbnail = {};
+  var thumbnail;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class AlbumWidget extends StatelessWidget {
                     width: 95.w,
                     height: 90.h,
                     child: Image.memory(
-                      thumbnail! as Uint8List,
+                      thumbnail,
                       fit: BoxFit.fitWidth,
                     ),
                   ),

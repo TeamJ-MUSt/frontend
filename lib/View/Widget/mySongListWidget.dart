@@ -5,14 +5,17 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/style.dart' as myStyle;
 
+import '../../data/bookmark_controller.dart';
 import '../../data/searchJson.dart';
 import '../SongDetailView/SongDetailView.dart';
 
-class SongListWidget extends StatelessWidget {
-  SongListWidget({required this.song, required this.thumbnail, super.key});
+class mySongListWidget extends StatelessWidget {
+  mySongListWidget({required this.song, required this.thumbnail, super.key});
 
   final SearchSong song;
-  final Uint8List? thumbnail; // 수정: Uint8List? 타입으로 변경
+  final Uint8List? thumbnail;
+
+  final BookmarkController bookmarkController = Get.put(BookmarkController());
 
   @override
   Widget build(BuildContext context) {
@@ -67,22 +70,29 @@ class SongListWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 InkWell(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.bookmark_border_outlined,
-                    color: myStyle.mainColor,
-                  ),
+                  onTap: () {
+                    bookmarkController.toggleBookmark(song.songId);
+                  },
+                  child: Obx(() {
+                    bool isBookmarked = bookmarkController.isBookmarked(song.songId);
+                    return Icon(
+                      isBookmarked ? Icons.bookmark : Icons.bookmark_border_outlined,
+                      color: isBookmarked ? myStyle.mainColor : myStyle.mainColor,
+                    );
+                  }),
                 ),
                 Container(
                   height: 15.h,
                   width: 40.w,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: myStyle.mainColor,
-                      width: 0,
-                    ),
-                    color: myStyle.mainColor,
+                    color: song.level != null
+                        ? song.level == 1
+                        ? Colors.green
+                        : song.level == 2
+                        ? myStyle.pointColor
+                        : myStyle.mainColor
+                        : myStyle.basicGray,
                   ),
                   child: Center(
                     child: Text(
@@ -92,7 +102,7 @@ class SongListWidget extends StatelessWidget {
                           : song.level == 2
                           ? "보통"
                           : "어려움"
-                          : "알 수 없음", // 수정: level이 null일 경우 대비
+                          : "알 수 없음",
                       style: TextStyle(color: Colors.white, fontSize: 12.sp),
                     ),
                   ),

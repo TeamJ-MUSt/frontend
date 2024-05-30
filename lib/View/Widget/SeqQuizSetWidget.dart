@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:must/View/LearningView/SequenceQuizView.dart';
 import 'package:must/style.dart' as myStyle;
 
 import '../../data/api_service.dart';
-import '../LearningView/ReadQuizView.dart';
 
-class ReadQuizSetWidget extends StatefulWidget {
-  ReadQuizSetWidget({
-    required this.content,
-    required this.comment,
-    required this.songId,
-    super.key,
-  });
+class SeqQuizSetWidget extends StatefulWidget {
 
-  final String content;
-  final String comment;
+  SeqQuizSetWidget({required this.content, required this.comment, required this.songId, super.key});
+  String content;
+  String comment;
   final int songId;
 
   @override
-  State<ReadQuizSetWidget> createState() => _ReadQuizSetWidgetState();
+  State<SeqQuizSetWidget> createState() => _SeqQuizSetWidgetState();
 }
 
-class _ReadQuizSetWidgetState extends State<ReadQuizSetWidget> {
+class _SeqQuizSetWidgetState extends State<SeqQuizSetWidget> {
   @override
   void initState() {
     super.initState();
   }
-
-
   void loadQuizData() async {
     print('Loading quiz data for songId: ${widget.songId}');
-    var quizSet = await fetchReadQuizData(widget.songId);
+    var quizSet = await fetchQuizData(widget.songId,'SENTENCE');
     print('Quiz data fetched: ${quizSet.toString()}');
     if (quizSet.success) {
       showDialog(
@@ -46,14 +41,14 @@ class _ReadQuizSetWidgetState extends State<ReadQuizSetWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(
                   quizSet.setNum - 1,
-                  (index) => ListTile(
+                      (index) => ListTile(
                     title: Text('퀴즈 ${index + 1}'),
                     onTap: () {
                       Navigator.of(context).pop(); // AlertDialog 닫기
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ReadQuizView(
+                          builder: (context) => SequenceQuizView(
                             songId: widget.songId,
                             setNum: index + 1,
                           ), // 상세 페이지로 이동
@@ -76,7 +71,7 @@ class _ReadQuizSetWidgetState extends State<ReadQuizSetWidget> {
         },
       );
     } else {
-      createQuiz('READING',widget.songId);
+      createQuiz('SENTENCE',widget.songId);
       print(widget.songId);
       print("create quizSet");
     }
@@ -85,7 +80,7 @@ class _ReadQuizSetWidgetState extends State<ReadQuizSetWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: (){
         loadQuizData();
       },
       child: Padding(

@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
-import '../Widget/SongListWidget.dart';
+import '../Widget/mySongListWidget.dart';
 
 class FindDataView extends StatelessWidget {
   String query;
@@ -33,10 +33,8 @@ class FindDataView extends StatelessWidget {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 SearchSong songs = snapshot.data![index];
-                // return SongListWidgetNoPic(
-                //     title: song.title, artist: song.artist
-                //     );
-                return SongListWidget(song: songs,thumbnail: thumbnail,);
+                Text(songs.toString());
+                return mySongListWidget(song: songs,thumbnail: thumbnail,);
               },
             ),
           ),

@@ -4,7 +4,7 @@ import 'package:must/View/LearningView/MeaningQuizView.dart';
 import 'package:must/View/LearningView/SequenceQuizView.dart';
 import 'package:must/View/WordBookView/WordBookView.dart';
 import 'package:must/style.dart' as myStyle;
-import 'package:must/View/Widget/LearningWidget.dart';
+import 'package:must/View/Widget/SeqQuizSetWidget.dart';
 import 'package:must/View/Widget/SongDetailCard.dart';
 
 import '../LearningView/ReadQuizView.dart';
@@ -69,26 +69,6 @@ class _SongDetailState extends State<SongDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LearningWidget(
-                      content: '단어장',
-                      comment: '노래에 등장하는 단어들을 확인합니다',
-                      moveTo: WordBookView(),
-                    ),
-                    // LearningWidget(
-                    //   content: '단어 퀴즈 - 뜻 맞추기',
-                    //   comment: '단어를 보고 한국어 뜻을 골라주세요',
-                    //   moveTo: MeaningQuizView(songId: 1,),
-                    // ),
-                    LearningWidget(
-                      content: '단어 퀴즈 - 발음 맞추기',
-                      comment: '단어를 보고 알맞은 발음을 골라주세요',
-                      moveTo: ReadQuizView(songId: 1, setNum: 1,),
-                    ),
-                    LearningWidget(
-                      content: '순서맞추기',
-                      comment: '뜻을 보고 문장의 순서를 맞춰주세요',
-                      moveTo: SequenceQuizView(),
-                    ),
                     Text("가사",style: myStyle.textTheme.bodyLarge,),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),

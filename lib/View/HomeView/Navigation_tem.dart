@@ -9,7 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../data/api_service.dart';
 import '../../data/searchJson.dart';
-import '../SongDetailView/SongDetailBasic.dart';
+// import '../SongDetailView/SongDetailBasic.dart';
+import '../SongDetailView/SongDetailView.dart';
 import '../Widget/albumWidget.dart';
 
 
@@ -23,7 +24,7 @@ class NavigationTem extends StatefulWidget {
 
 class _NavigationTemState extends State<NavigationTem> {
   List<SearchSong> songs = [];
-  Map<int, Uint8List> thumbnails = {};
+  var thumbnails;
 
   @override
   void initState() {
@@ -144,13 +145,13 @@ class _NavigationTemState extends State<NavigationTem> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      List selectSong = [
-                        songs[index].title,
-                        songs[index].artist,
-                        thumbnails,
-                        songs[index].lyrics.replaceAll('\n', '\\n'),
-                      ];
-                      Get.to(() => SongDetail(musicInfo:selectSong));
+                      // List selectSong = [
+                      //   songs[index].title,
+                      //   songs[index].artist,
+                      //   thumbnails[index],
+                      //   songs[index].lyrics.replaceAll('\n', '\\n'),
+                      // ];
+                      Get.to(() => SongDetailView(song: songs[index],thumbnail: thumbnails[songs[index].songId],));
                     },
                     child: SingleChildScrollView(
                       child: Column(
@@ -163,7 +164,7 @@ class _NavigationTemState extends State<NavigationTem> {
                             width: 95.w,
                             height: 90.h,
                             child: Image.memory(
-                              thumbnails! as Uint8List,
+                              thumbnails[songs[index].songId],
                               fit: BoxFit.fitWidth,
                             ),
                           ),

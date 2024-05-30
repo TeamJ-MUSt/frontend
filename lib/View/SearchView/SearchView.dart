@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,22 +10,21 @@ import '../../data/api_service.dart';
 import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
-import '../Widget/SongListWidget.dart';
+import '../Widget/mySongListWidget.dart';
 
-class TempSearchView extends StatefulWidget {
-  TempSearchView({required this.query,super.key});
-  String query;
+class SearchView extends StatefulWidget {
+  SearchView({required this.query, super.key});
+  final String query;
 
   @override
-  State<TempSearchView> createState() => _TempSearchViewState(query : query);
+  State<SearchView> createState() => _SearchViewState(query: query);
 }
 
-class _TempSearchViewState extends State<TempSearchView> {
-  _TempSearchViewState({required this.query});
-  String query;
+class _SearchViewState extends State<SearchView> {
+  _SearchViewState({required this.query});
+  final String query;
   List<SearchSong> songs = [];
   Map<int, Uint8List> thumbnails = {};
-
 
   @override
   void initState() {
@@ -35,18 +34,23 @@ class _TempSearchViewState extends State<TempSearchView> {
 
   Future<void> fetchSongsAndThumbnails() async {
     try {
-      songs = await searchSongData(widget.query);
-      print('fetch end');
-      for (var song in songs) {
-        if (song.songId != null) { //노래 데이터를 찾으면 썸네일을 가져옵니다
-          Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
-          if (thumbnail != null) {
-            thumbnails[song.songId] = thumbnail; // Correct key to songId
-            print('Thumbnail for song ID ${song.songId} fetched');
+      var response = await searchSongData2(widget.query);
+      if (response.success && response.songs != null) {
+        songs = response.songs!;
+        print('fetch end');
+        for (var song in songs) {
+          if (song.songId != null) {
+            Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
+            if (thumbnail != null) {
+              thumbnails[song.songId] = thumbnail;
+              print('Thumbnail for song ID ${song.songId} fetched');
+            }
+          } else {
+            print('no song id!');
           }
-        } else {
-          print('no song id!');
         }
+      } else {
+        print('No songs found or request failed');
       }
       setState(() {}); // Refresh UI with fetched data
     } catch (e) {
@@ -61,15 +65,13 @@ class _TempSearchViewState extends State<TempSearchView> {
         backgroundColor: Colors.white,
         foregroundColor: myStyle.mainColor,
       ),
-      body: FutureBuilder<List<SearchSong>>(
-        future: searchSongData(widget.query),
-        builder: (BuildContext context, AsyncSnapshot<List<SearchSong>> snapshot) {
+      body: FutureBuilder<ApiResponse>(
+        future: searchSongData2(widget.query),
+        builder: (BuildContext context, AsyncSnapshot<ApiResponse> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             print("로딩중");
-            // 로딩 중 인디케이터
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // 에러 발생 시
             return Center(
               child: Container(
                 color: Colors.blue,
@@ -78,8 +80,8 @@ class _TempSearchViewState extends State<TempSearchView> {
                 ),
               ),
             );
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            // 데이터가 있고, 비어있지 않은 경우
+          } else if (snapshot.hasData && snapshot.data!.songs.isNotEmpty) {
+            songs = snapshot.data!.songs;
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
               child: Column(
@@ -94,8 +96,11 @@ class _TempSearchViewState extends State<TempSearchView> {
                       shrinkWrap: true,
                       itemCount: songs.length,
                       itemBuilder: (context, index) {
-                        SearchSong song = songs[index]; // Retrieve the thumbnail using songId
-                        return SongListWidget(song: song,thumbnail: thumbnails[song.songId],);
+                        SearchSong song = songs[index];
+                        return mySongListWidget(
+                          song: song,
+                          thumbnail: thumbnails[song.songId],
+                        );
                       },
                     ),
                   ),
@@ -112,11 +117,21 @@ class _TempSearchViewState extends State<TempSearchView> {
               ),
             );
           } else {
-            // 데이터가 비어 있는 경우
-            return NoDataView(query: widget.query);
+            return Center(
+              child: InkWell(
+                onTap: () {
+                  Get.to(() => EnrollSearchView(query: query));
+                },
+                child: Text(
+                  '원하는 노래가 없나요?',
+                  style: myStyle.textTheme.displayMedium,
+                ),
+              ),
+            );
           }
         },
       ),
     );
   }
+
 }

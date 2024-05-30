@@ -5,8 +5,8 @@ import 'package:must/style.dart' as myStyle;
 
 import '../../data/api_service.dart';
 
-class QuizSetWidget extends StatefulWidget {
-  QuizSetWidget({
+class MeaningQuizSetWidget extends StatefulWidget {
+  MeaningQuizSetWidget({
     required this.content,
     required this.comment,
     required this.songId,
@@ -18,10 +18,10 @@ class QuizSetWidget extends StatefulWidget {
   final int songId;
 
   @override
-  State<QuizSetWidget> createState() => _QuizSetWidgetState();
+  State<MeaningQuizSetWidget> createState() => _MeaningQuizSetWidgetState();
 }
 
-class _QuizSetWidgetState extends State<QuizSetWidget> {
+class _MeaningQuizSetWidgetState extends State<MeaningQuizSetWidget> {
   @override
   void initState() {
     super.initState();
@@ -29,7 +29,8 @@ class _QuizSetWidgetState extends State<QuizSetWidget> {
   }
 
   void loadQuizData() async {
-    var quizSet = await fetchMeanQuizData(widget.songId);
+    //퀴즈조회
+    var quizSet = await fetchQuizData(widget.songId,'MEANING');
     if (quizSet.success) {
       showDialog(
         context: context,
@@ -43,7 +44,7 @@ class _QuizSetWidgetState extends State<QuizSetWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(
-                  quizSet.setNum,
+                  quizSet.setNum-1,
                       (index) => ListTile(
                     title: Text('퀴즈 ${index + 1}'),
                     onTap: () {
@@ -75,7 +76,9 @@ class _QuizSetWidgetState extends State<QuizSetWidget> {
         },
       );
     } else {
-      print("no quizSet");
+      createQuiz('MEANING',widget.songId);
+      print(widget.songId);
+      print("create quizSet");
     }
   }
 

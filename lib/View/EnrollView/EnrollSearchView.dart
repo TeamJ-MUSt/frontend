@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -10,42 +11,37 @@ import '../../data/searchJson.dart';
 
 class EnrollSearchView extends StatefulWidget {
   EnrollSearchView({required this.query, super.key});
-  String query;
+  final String query;
 
   @override
   State<EnrollSearchView> createState() => _EnrollSearchViewState();
 }
 
 class _EnrollSearchViewState extends State<EnrollSearchView> {
+  late Future<List<SearchSong>> _futureSongs;
+  Map<int, Uint8List> thumbnails = {};
+
   @override
   void initState() {
     super.initState();
-    print(widget.query);
-    fetchSongsAndThumbnails();
+    _futureSongs = fetchSongsAndThumbnails();
   }
 
-  List<SearchSong> songs = [];
-  Map<int, Uint8List> thumbnails = {};
-
-  Future<void> fetchSongsAndThumbnails() async {
+  Future<List<SearchSong>> fetchSongsAndThumbnails() async {
     try {
-      songs = await totalSearchSongData(widget.query);
-      print('fetch end');
+      List<SearchSong> songs = await CrawlingSongData(widget.query);
       for (var song in songs) {
         if (song.songId != null) {
-          //노래 데이터를 찾으면 썸네일을 가져옵니다
           Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
           if (thumbnail != null) {
-            thumbnails[song.songId] = thumbnail; // Correct key to songId
-            print('Thumbnail for song ID ${song.songId} fetched');
+            thumbnails[song.songId] = thumbnail;
           }
-        } else {
-          print('no song id!');
         }
       }
-      setState(() {}); // Refresh UI with fetched data
+      return songs;
     } catch (e) {
       print('Error fetching data: $e');
+      throw e;
     }
   }
 
@@ -56,26 +52,20 @@ class _EnrollSearchViewState extends State<EnrollSearchView> {
         backgroundColor: Colors.white,
         foregroundColor: myStyle.mainColor,
       ),
-      body:  FutureBuilder<List<SearchSong>>(
-        future: totalSearchSongData(widget.query),
+      body: FutureBuilder<List<SearchSong>>(
+        future: _futureSongs,
         builder: (BuildContext context, AsyncSnapshot<List<SearchSong>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            print("로딩중");
-            // 로딩 중 인디케이터
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // 에러 발생 시
             return Center(
               child: Container(
                 color: Colors.blue,
-                child: Text(
-                  'Error: ${snapshot.error}',
-                ),
+                child: Text('Error: ${snapshot.error}'),
               ),
             );
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            print(snapshot);
-            // 데이터가 있고, 비어있지 않은 경우
+            List<SearchSong> songs = snapshot.data!;
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
               child: Column(
@@ -90,25 +80,19 @@ class _EnrollSearchViewState extends State<EnrollSearchView> {
                       shrinkWrap: true,
                       itemCount: songs.length,
                       itemBuilder: (context, index) {
-                        SearchSong song = songs[index]; // Retrieve the thumbnail using songId
-                        return SongListSmall(song: song,thumbnail: thumbnails[song.songId],);
+                        SearchSong song = songs[index];
+                        return SongListSmall(
+                          song: song,
+                          thumbnail: thumbnails[song.songId],
+                        );
                       },
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                    },
-                    child: Text(
-                      '원하는 노래가 없나요?',
-                      style: myStyle.textTheme.displayMedium,
                     ),
                   ),
                 ],
               ),
             );
           } else {
-            // 데이터가 비어 있는 경우
-            return Text("NO DATA");
+            return Center(child: Text("NO DATA"));
           }
         },
       ),

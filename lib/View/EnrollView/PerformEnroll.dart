@@ -24,6 +24,13 @@ class PerformEnroll extends StatefulWidget {
 
 class _PerformEnrollState extends State<PerformEnroll> {
   @override
+  void initState() {
+    super.initState();
+    enrollSongData(widget.song.songId);
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
