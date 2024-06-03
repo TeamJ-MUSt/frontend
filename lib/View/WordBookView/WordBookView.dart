@@ -16,7 +16,6 @@ class WordBookView extends StatefulWidget {
 class _WordBookViewState extends State<WordBookView> {
   List<Word> words = [];
   List<bool> selection = [true, true];
-  List<bool> hide = [false, false];
   int hidden = -1;
   Set<String> memorizedWords = Set<String>();
 
@@ -73,7 +72,7 @@ class _WordBookViewState extends State<WordBookView> {
     });
   }
 
-  void showWordDialog(BuildContext context, Word word) async{
+  void showWordDialog(BuildContext context, Word word) async {
     List<SimWord> wordlist = await simWordget(word.id);
     showDialog(
       context: context,
@@ -106,7 +105,6 @@ class _WordBookViewState extends State<WordBookView> {
             TextButton(
               child: Text('추가'),
               onPressed: () {
-
                 Navigator.of(context).pop();
               },
             ),
@@ -189,15 +187,14 @@ class _WordBookViewState extends State<WordBookView> {
             ),
             SizedBox(height: 5.h),
             Expanded(
-              child: ListView.builder(
-                itemCount: words.isNotEmpty ? words.length * 2 - 1 : 0,
+              child: ListView.separated(
+                itemCount: words.length,
                 itemBuilder: (context, index) {
-                  int itemIndex = index ~/ 2;
-                  Word word = words[itemIndex];
+                  Word word = words[index];
 
                   // 필터링 로직
                   bool shouldDisplay = (selection[0] &&
-                          memorizedWords.contains(word.spell)) ||
+                      memorizedWords.contains(word.spell)) ||
                       (selection[1] && !memorizedWords.contains(word.spell));
                   if (!shouldDisplay) return SizedBox.shrink();
 
@@ -206,7 +203,6 @@ class _WordBookViewState extends State<WordBookView> {
                       showWordDialog(context, word);
                     },
                     child: IntrinsicHeight(
-                      // height: 70.h,
                       child: Stack(
                         children: [
                           Positioned(
@@ -240,7 +236,7 @@ class _WordBookViewState extends State<WordBookView> {
                                       : "${word.spell} (${word.japPro})",
                                   style: myStyle.textTheme.labelMedium,
                                 ),
-                                SizedBox(height: 3.h,),
+                                SizedBox(height: 3.h),
                                 Text(
                                   hidden == 0
                                       ? "[${word.classOfWord}]"
@@ -253,8 +249,7 @@ class _WordBookViewState extends State<WordBookView> {
                                       .join(' '),
                                   style: myStyle.textTheme.displaySmall,
                                 ),
-                                SizedBox(height: 2.h,),
-                                Divider(thickness:1),
+                                SizedBox(height: 2.h),
                               ],
                             ),
                           ),
@@ -262,6 +257,9 @@ class _WordBookViewState extends State<WordBookView> {
                       ),
                     ),
                   );
+                },
+                separatorBuilder: (context, index) {
+                  return Divider(thickness: 1);
                 },
               ),
             ),

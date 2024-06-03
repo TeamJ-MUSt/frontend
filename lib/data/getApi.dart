@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
   Future<String> TranslationService(String text) async {
     var _baseUrl = 'https://translation.googleapis.com/language/translate/v2';
-    var key = 'AIzaSyBx1wnNqUD2Q2jSdn3bEH7Xy7NGA9_jq3w';
+    var key = 'api_key';
 
     var to = "ko";//(ex: en, ko, etc..)
     var response = await http.post(
@@ -23,7 +23,7 @@ import 'package:http/http.dart' as http;
 
 
 Future<String> getTranslation_papago(String text) async {
-  String _client_id = "zu36cpwv04";
+  String _client_id = "client_id";
   String _client_secret = "lZAiglUdQ6Qqbtarxz9ZEIwHWpSZy7RYxX8oCNh6";
   String _content_type = "application/x-www-form-urlencoded; charset=UTF-8";
   final String encodedText = Uri.encodeComponent(text);
