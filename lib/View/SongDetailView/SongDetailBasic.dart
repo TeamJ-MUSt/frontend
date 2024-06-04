@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:must/View/LearningView/MeaningQuizView.dart';
-import 'package:must/View/LearningView/SequenceQuizView.dart';
-import 'package:must/View/WordBookView/WordBookView.dart';
 import 'package:must/style.dart' as myStyle;
-import 'package:must/View/Widget/SeqQuizSetWidget.dart';
 import 'package:must/View/Widget/SongDetailCard.dart';
 
-import '../LearningView/ReadQuizView.dart';
 
 class SongDetail extends StatefulWidget {
   SongDetail({required this.musicInfo, super.key});
@@ -73,7 +68,6 @@ class _SongDetailState extends State<SongDetail> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),
                       child: Text(musicInfo[3]),
-                      // child: Text("空にある何かを見つめてたら\nそれは星だって君がおしえてくれた\nまるでそれは僕らみたいに  寄り添ってる\nそれを泣いたり笑ったり繋いでいく\n何十回  何百回  ぶつかりあって\n何十年  何百年  昔の光が​\n星自身も忘れたころに​\n僕らに届いてる​\n僕ら見つけあって  手繰りあって  同じ空​\n輝くのだって  二人だって  約束した​\n遥か遠く終わらないべテルギウス​\n誰かに繋ぐ魔法​\n僕ら  肩並べ  手取り合って  進んでく​\n辛い時だって  泣かないって  誓っただろう​\n遥か遠く終わらないべテルギウス​\n君にも見えるだろう  祈りが​\n記憶を辿るたび  蘇るよ​\n君がいつだってそこに居てくれること​\nまるでそれは星の光と  同じように​\n今日に泣いたり笑ったり繋いでいく​\n何十回  何百回  ぶつかりあって​\n何十年  何百年  昔の光が​\n僕自身も忘れたころに​\n僕らを照らしてる​\n僕ら見つけあって  手繰りあって  同じ空​\n輝くのだって  二人だって  約束した​\n遥か遠く終わらないべテルギウス​\n誰かに繋ぐ魔法​\nどこまで  いつまで  生きられるか​\n君が不安になるたびに強がるんだ​\n大丈夫  僕が横にいるよ​\n見えない線を繋ごう​\n僕ら見つけあって  手繰りあって  同じ空​\n輝くのだって  二人だって  約束した​\n遥か遠く終わらないべテルギウス​\n誰かに繋ぐ魔法​\n僕ら 肩並べ 手取り合って 進んでく​\n辛い時だって  二人だって  誓っただろう​\n遥か遠く終わらないべテルギウス​\n君にも見えるだろう  祈りが​\n空にある何かを見つめてたら​\nそれは星だって君がおしえてくれた​", style: myStyle.textTheme.bodySmall,),
                     ),
                   ],
                 ),

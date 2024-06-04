@@ -21,9 +21,9 @@ class SongListSmall extends StatelessWidget {
         //등록
         enrollSongData(song.songId);
         Get.to(() => PerformEnroll(
-              song: song,
-              thumbnail: thumbnail,
-            ));
+          song: song,
+          thumbnail: thumbnail,
+        ));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 5.h),

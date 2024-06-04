@@ -1,11 +1,16 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:must/style.dart' as myStyle;
 import '../../data/SeqQuizJson.dart';
 import '../../data/api_service.dart';
 import '../../data/getApi.dart';
+import '../../data/googleTranslate2.dart';
 import '../Widget/check_anime.dart';
+import 'QuizEndView.dart';
 
 class SequenceQuizView extends StatefulWidget {
   SequenceQuizView({required this.songId, required this.setNum, super.key});
@@ -29,14 +34,16 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
   // final _translationService = TranslationService("API_KEY");
   String translatedText = '';
   String papagotranslatedText = '';
-
+  int correctCnt = 0;
   late AnimationController _controller;
   late Animation<double> _animation;
+  late GoogleTranslateService _translationService;
 
   @override
   void initState() {
     super.initState();
     getQuiz();
+    _translationService = GoogleTranslateService(dotenv.env['GOOGLE_TRANSLATE_API_KEY']!);
 
     _controller = AnimationController(
       vsync: this,
@@ -68,7 +75,9 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
   void _translateCurrentQuiz() async {
     try {
       final text = quizzes[currentQuizIndex].answers[0];
-      final translated = await TranslationService(text);
+      final translated = await _translationService.translate(text, 'ko');
+
+
       setState(() {
         translatedText = translated;
       });
@@ -76,21 +85,6 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
       print('Translation error: $e');
       setState(() {
         translatedText = '번역 실패: $e';
-      });
-    }
-  }
-
-  void papagotranslateCurrentQuiz() async {
-    try {
-      final text = quizzes[currentQuizIndex].answers[0];
-      final papagoTranslated = await getTranslation_papago(text);
-      setState(() {
-        papagotranslatedText = papagoTranslated;
-      });
-    } catch (e) {
-      print('Translation error: $e');
-      setState(() {
-        papagotranslatedText = '번역 실패: $e';
       });
     }
   }
@@ -113,10 +107,12 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
   void submitAnswer() {
     setState(() {
       isSubmit = true;
-      if (selectedWords.join('') == quizzes[currentQuizIndex].answers[0]) {
+      String real_answer = quizzes[currentQuizIndex].answers[0].replaceAll(' ', '');
+      if (selectedWords.join('') == real_answer) {
         isCorrect = true;
         submitButtonColor = myStyle.pointColor;
         submitMent = "다음으로";
+        correctCnt++;
       } else {
         isCorrect = false;
         submitButtonColor = myStyle.mainColor;
@@ -155,7 +151,9 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
       });
     } else {
       print("마지막 퀴즈입니다.");
-      // 마지막 퀴즈일 때 추가 동작이 필요하다면 여기서 처리
+      Get.until((route) => Get.previousRoute == '/'); // 스택에서 두 개의 화면 제거
+      Get.to(() => QuizEndView(correctCnt: correctCnt));
+
     }
   }
 
@@ -198,6 +196,10 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                 Text(
                   '${currentQuizIndex + 1}/${quizzes.length}',
                   style: myStyle.textTheme.bodyMedium,
+                ),
+                Text(
+                  '정답 개수 : $correctCnt',
+                  style: myStyle.textTheme.bodySmall,
                 ),
                 Expanded(
                   flex: 2,
@@ -272,7 +274,8 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                         setState(() {
                           resultText = '정답 : ${quizzes[currentQuizIndex].answers[0]}';
                           submitMent = "다음으로";
-                          submitButtonColor = myStyle.mainColor;
+                          submitButtonColor = myStyle.pointColor;
+                          isSubmit = false;
                         });
                       },
                       child: Container(

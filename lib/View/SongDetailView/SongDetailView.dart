@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:must/View/LearningView/MeaningQuizView.dart';
-import 'package:must/View/LearningView/SequenceQuizView.dart';
 import 'package:must/View/Widget/MeaningQuizSetWidget.dart';
-import 'package:must/View/WordBookView/WordBookView.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:must/View/Widget/SeqQuizSetWidget.dart';
 import 'package:must/View/Widget/SongDetailCardAPI.dart';
 
 import '../../data/api_service.dart';
 import '../../data/searchJson.dart';
-import '../LearningView/ReadQuizView.dart';
 import '../Widget/ReadQuizSetWidget.dart';
 
 class SongDetailView extends StatefulWidget {
@@ -57,22 +53,6 @@ class _SongDetailViewState extends State<SongDetailView> {
                 Text(
                   "학습하기",
                   style: myStyle.textTheme.bodyLarge,
-                ),
-                Row(
-                  children: [
-                    // Text("아는 단어 제외"),
-                    // Switch(
-                    //   activeColor: myStyle.mainColor,
-                    //   value: _isChecked,
-                    //   onChanged: (value) {
-                    //     setState(
-                    //       () {
-                    //         _isChecked = value;
-                    //       },
-                    //     );
-                    //   },
-                    // ),
-                  ],
                 ),
               ],
             ),

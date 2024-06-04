@@ -46,9 +46,11 @@ class AlbumWidget extends StatelessWidget {
                     ),
                     width: 95.w,
                     height: 90.h,
-                    child: Image.memory(
-                      thumbnail,
-                      fit: BoxFit.fitWidth,
+                    child: SizedBox(
+                      width: 50.w,
+                      child: thumbnail != null
+                          ? Image.memory(thumbnail!, width: 50, height: 50)
+                          : Container(width: 50, height: 50, color: Colors.grey),
                     ),
                   ),
                   Text(

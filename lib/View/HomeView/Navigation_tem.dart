@@ -2,18 +2,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:must/View/Widget/recommandWidget.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../data/api_service.dart';
 import '../../data/searchJson.dart';
-// import '../SongDetailView/SongDetailBasic.dart';
 import '../SongDetailView/SongDetailView.dart';
-import '../Widget/albumWidget.dart';
-
-
 
 class NavigationTem extends StatefulWidget {
   const NavigationTem({super.key});
@@ -24,7 +19,7 @@ class NavigationTem extends StatefulWidget {
 
 class _NavigationTemState extends State<NavigationTem> {
   List<SearchSong> songs = [];
-  var thumbnails;
+  Map<int, Uint8List> thumbnails = {};
 
   @override
   void initState() {
@@ -37,17 +32,17 @@ class _NavigationTemState extends State<NavigationTem> {
       songs = await fetchSongData();
       print('fetch end');
       for (var song in songs) {
-        if (song.songId != null) { //노래 데이터를 찾으면 썸네일을 가져옵니다
+        if (song.songId != null) {
           Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
           if (thumbnail != null) {
-            thumbnails[song.songId] = thumbnail; // Correct key to songId
+            thumbnails[song.songId] = thumbnail;
             print('Thumbnail for song ID ${song.songId} fetched');
           }
         } else {
           print('no song id!');
         }
       }
-      setState(() {}); // Refresh UI with fetched data
+      setState(() {});
     } catch (e) {
       print('Error fetching data: $e');
     }
@@ -55,7 +50,6 @@ class _NavigationTemState extends State<NavigationTem> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Song> songs = Song.parseUserList(jsonString);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 15.w),
       child: Column(
@@ -91,10 +85,18 @@ class _NavigationTemState extends State<NavigationTem> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white),
                           ),
-                          RecommandWidget(
+                          if (songs.isNotEmpty && thumbnails.containsKey(songs[0].songId))
+                            RecommandWidget(
                               title: songs[0].title,
                               artist: songs[0].artist,
-                              thumbnail: thumbnails[songs[0].songId])
+                              thumbnail: thumbnails[songs[0].songId],
+                            )
+                          else
+                            Container(
+                              // width: 50.w,
+                              height: 70.h,
+                              color: Colors.white,
+                            ),
                         ],
                       ),
                     ),
@@ -135,59 +137,60 @@ class _NavigationTemState extends State<NavigationTem> {
             height: 5.h,
           ),
           Expanded(
-            child : GridView.builder(
-                itemCount: songs.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: (5 / 7),
-                  crossAxisSpacing: 3.w,
-                ),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // List selectSong = [
-                      //   songs[index].title,
-                      //   songs[index].artist,
-                      //   thumbnails[index],
-                      //   songs[index].lyrics.replaceAll('\n', '\\n'),
-                      // ];
-                      Get.to(() => SongDetailView(song: songs[index],thumbnail: thumbnails[songs[index].songId],));
-                    },
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+            child: GridView.builder(
+              itemCount: songs.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: (5 / 7),
+                crossAxisSpacing: 3.w,
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.to(() => SongDetailView(
+                      song: songs[index],
+                      thumbnail: thumbnails[songs[index].songId],
+                    ));
+                  },
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          width: 95.w,
+                          height: 90.h,
+                          child: thumbnails[songs[index].songId] != null
+                              ? Image.memory(
+                            thumbnails[songs[index].songId]!,
+                            fit: BoxFit.fitWidth,
+                          )
+                              : Container(
                             width: 95.w,
                             height: 90.h,
-                            child: Image.memory(
-                              thumbnails[songs[index].songId],
-                              fit: BoxFit.fitWidth,
-                            ),
+                            color: Colors.grey,
                           ),
-                          Text(
-                            songs[index].title,
-                            style: myStyle.textTheme.labelLarge,
-                          ),
-                          Text(
-                            songs[index].artist,
-                            style: myStyle.textTheme.displaySmall,
-                          ),
-                        ],
-                      ),
+                        ),
+                        Text(
+                          songs[index].title,
+                          style: myStyle.textTheme.labelLarge,
+                        ),
+                        Text(
+                          songs[index].artist,
+                          style: myStyle.textTheme.displaySmall,
+                        ),
+                      ],
                     ),
-                  );
-                })
-            // child: Container(
-              // color: Colors.black,
-              // child: AlbumWidget(songs),
-            // ),
+                  ),
+                );
+              },
+            ),
           )
         ],
       ),
     );
   }
 }
+

@@ -9,6 +9,7 @@ import '../data/musicjson.dart';
 import '../data/searchJson.dart';
 import 'BookMarkView.dart';
 import 'HomeView/HomeView.dart';
+import 'LearningView/TempSequenceQuizView.dart';
 import 'MySettingView.dart';
 import 'SearchView/SearchView.dart';
 import 'WordBookView/WordBookView.dart';
@@ -28,9 +29,9 @@ class _MainViewState extends State<MainView> {
       FocusNode(); // 검색 TextField를 위한 FocusNode 추가
 
   final List<Widget> _widgetOptions = <Widget>[
-    const HomeView(),
+    HomeView(),
     WordBookView(),
-    SequenceQuizView(songId: 1, setNum: 1),
+    BookMarkView(),
     // const MySettingView(),
   ];
 

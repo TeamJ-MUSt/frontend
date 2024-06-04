@@ -75,10 +75,12 @@ class SongDetailCardAPI extends StatelessWidget {
                   ),
                   Text(
                     song.title,
+                    overflow: TextOverflow.ellipsis,
                     style: myStyle.textTheme.bodyMedium,
                   ),
                   Text(
                     song.artist,
+                    overflow: TextOverflow.ellipsis,
                     style: myStyle.textTheme.displayMedium,
                   )
                 ],

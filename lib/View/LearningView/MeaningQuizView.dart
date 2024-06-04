@@ -202,6 +202,10 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
                 '${currentQuizIndex + 1}/${quizzes.length}',
                 style: myStyle.textTheme.bodyMedium,
               ),
+              Text(
+                '정답 개수 : $correctCnt',
+                style: myStyle.textTheme.bodySmall,
+              ),
               Expanded(
                 flex: 2,
                 child: Center(
@@ -212,13 +216,6 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
                         question,
                         style: myStyle.textTheme.titleLarge,
                       ),
-                      // TextButton(
-                      //   onPressed: () => tts.speak("ははは"),
-                      //   child: Text(
-                      //     '읽기',
-                      //     style: TextStyle(color: Colors.blue),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

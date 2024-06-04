@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'Navigation_tem.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +43,12 @@ class HomeView extends StatelessWidget {
                         height: 36.h,
                       ),
                     ]),
-                const Expanded(
+                Expanded(
                   child: TabBarView(
                     children: [
                       SingleChildScrollView(child: MyLearningView()),
-                      Center(child: NavigationTem()),
-                      Center(
+                      const Center(child: NavigationTem()),
+                      const Center(
                         child: LevelView(),
                       ),
                     ],

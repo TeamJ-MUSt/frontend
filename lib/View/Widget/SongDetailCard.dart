@@ -31,11 +31,7 @@ class SongDetailCard extends StatelessWidget {
           SizedBox(
             width: 10.w,
           ),
-          SizedBox(
-            // color: Colors.deepPurple,
-            width: 170.w,
-            height: 80.h,
-            // margin: EdgeInsets.symmetric(vertical: 15.h),
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,6 +41,7 @@ class SongDetailCard extends StatelessWidget {
                 ),
                 Text(
                   musicInfo[0],
+                  overflow: TextOverflow.ellipsis,
                   style: myStyle.textTheme.bodyMedium,
                 ),
                 Text(

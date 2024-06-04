@@ -12,6 +12,7 @@ import 'package:must/data/wordJson.dart';
 import 'dart:convert';
 import 'ReadingQuizParsing.dart';
 import 'SeqQuizJson.dart';
+import 'SeqQuizJson2.dart';
 
 String ip ='222.108.102.12:9090';
 // String ip ='192.168.0.2:8080';
@@ -27,6 +28,10 @@ class quizSet {
 }
 
 // 노래를 등록합니다
+
+Future<void> findSearchSongwithId(int songId) async{
+
+}
 
 // 크롤링
 
@@ -269,13 +274,13 @@ Future<List<MeanQuiz>> createMeanQuizSet(int setNum, int songId) async {
 }
 
 //퀴즈를 조회합니다 - 조회 가능한지 여부, 리스트 개수
-Future<quizSet> fetchQuizData(int songId,String quizType) async {
+
+Future<quizSet> fetchQuizData(int songId, String quizType) async {
   var url = Uri.parse('http://${ip}/quiz/info?songId=${songId}&type=${quizType}');
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var checkBody = jsonDecode(utf8.decode(response.bodyBytes));
-      // quizSet = ;
       bool success = checkBody['success'];
       int setNum = checkBody['setNum'];
       return quizSet(success, setNum);
@@ -327,14 +332,13 @@ Future<List<ReadQuiz>> getReadQuizSet(int setNum, int songId) async {
 }
 //퀴즈를 생성합니다
 
-Future<void> createQuiz(String quizType, int songId) async{
+Future<void> createQuiz(String quizType, int songId) async {
   var url = Uri.parse('http://${ip}/quiz/new?songId=${songId}&type=${quizType}');
   try {
     var response = await http.post(url);
     if (response.statusCode == 200) {
       print("Creating quiz");
       var decodedBody = utf8.decode(response.bodyBytes);
-      // var jsonData = json.decode(decodedBody);
       print(response.statusCode);
       print(decodedBody);
     }
@@ -342,6 +346,7 @@ Future<void> createQuiz(String quizType, int songId) async{
     print('Failed to make request for quiz: $e\n');
   }
 }
+
 
 //퀴즈를 조회합니다 -
 Future<quizSet> fetchReadQuizData(int songId) async {
@@ -367,13 +372,13 @@ Future<quizSet> fetchReadQuizData(int songId) async {
 
 
 //순서퀴즈 조회
-Future<List<SeqQuiz>> loadQuizData() async {
+Future<List<SeqQuiz2>> loadQuizData() async {
   try {
     String jsonString = await rootBundle.loadString('assets/seqQuizData.json');
     final List<dynamic> jsonData = json.decode(jsonString);
     return jsonData.map((item) {
-      final quiz = SeqQuiz.fromJson(item);
-      quiz.choices.shuffle(Random());
+      final quiz = SeqQuiz2.fromJson(item);
+      quiz.options.shuffle(Random());
       return quiz;
     }).toList();
   } catch (e) {

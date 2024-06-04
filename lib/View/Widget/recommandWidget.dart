@@ -1,14 +1,13 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:get/utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/style.dart' as myStyle;
 
-
 class RecommandWidget extends StatelessWidget {
-  RecommandWidget({super.key, required this.title, required this.artist, required this.thumbnail});
+  RecommandWidget({super.key, required this.title, required this.artist, this.thumbnail});
   final String title;
   final String artist;
-  var thumbnail;
+  Uint8List? thumbnail;
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +16,19 @@ class RecommandWidget extends StatelessWidget {
       height: 50.h,
       child: Row(
         children: [
-          SizedBox(width: 70.w, child: Image.memory(thumbnail),),
+          SizedBox(
+            width: 50.w,
+            child: thumbnail != null
+                ? Image.memory(thumbnail!, width: 50, height: 50)
+                : Container(width: 50, height: 50, color: Colors.grey),
+          ),
           SizedBox(width: 5.w,),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title,style: myStyle.textTheme.headlineLarge,),
-              Text(artist,style: myStyle.textTheme.headlineMedium,)
+              Text(title, style: myStyle.textTheme.headlineLarge,),
+              Text(artist, style: myStyle.textTheme.headlineMedium,)
             ],
           )
         ],

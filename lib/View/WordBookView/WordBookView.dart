@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/api_service.dart';
 import '../../data/wordJson.dart';
+int globalWordsLength = 0;
 
 class WordBookView extends StatefulWidget {
   @override
@@ -41,7 +42,8 @@ class _WordBookViewState extends State<WordBookView> {
   void loadWordsData() async {
     try {
       words = await getWordbook(1);
-      print("Loaded ${words.length} words.");
+      globalWordsLength = words.length;
+      print("Loaded ${globalWordsLength} words.");
       setState(() {});
     } catch (e) {
       print('Error loading word data: $e');

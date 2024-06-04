@@ -40,9 +40,9 @@ class _SeqQuizSetWidgetState extends State<SeqQuizSetWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(
-                  quizSet.setNum - 1,
+                  quizSet.setNum,
                       (index) => ListTile(
-                    title: Text('퀴즈 ${index + 1}'),
+                    title: Text('퀴즈 ${index+1}'),
                     onTap: () {
                       Navigator.of(context).pop(); // AlertDialog 닫기
                       Navigator.push(
@@ -50,7 +50,7 @@ class _SeqQuizSetWidgetState extends State<SeqQuizSetWidget> {
                         MaterialPageRoute(
                           builder: (context) => SequenceQuizView(
                             songId: widget.songId,
-                            setNum: index + 1,
+                            setNum: index,
                           ), // 상세 페이지로 이동
                         ),
                       );

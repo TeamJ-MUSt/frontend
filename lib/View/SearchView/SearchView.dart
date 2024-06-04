@@ -10,6 +10,7 @@ import '../../data/api_service.dart';
 import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
+import '../Widget/findDataViewSongWidget.dart';
 import '../Widget/mySongListWidget.dart';
 
 class SearchView extends StatefulWidget {
@@ -97,7 +98,8 @@ class _SearchViewState extends State<SearchView> {
                       itemCount: songs.length,
                       itemBuilder: (context, index) {
                         SearchSong song = songs[index];
-                        return mySongListWidget(
+                        print(song.level);
+                        return findDataViewSongWidget(
                           song: song,
                           thumbnail: thumbnails[song.songId],
                         );
