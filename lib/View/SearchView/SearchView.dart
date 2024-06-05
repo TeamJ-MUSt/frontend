@@ -53,7 +53,7 @@ class _SearchViewState extends State<SearchView> {
       } else {
         print('No songs found or request failed');
       }
-      setState(() {}); // Refresh UI with fetched data
+      setState(() {});
     } catch (e) {
       print('Error fetching data: $e');
     }
@@ -89,7 +89,7 @@ class _SearchViewState extends State<SearchView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${query}에 대한 검색 결과입니다",
+                    "등록된 데이터 중에서 ${query}에 대한 검색 결과입니다",
                     style: myStyle.textTheme.bodyMedium,
                   ),
                   Flexible(
