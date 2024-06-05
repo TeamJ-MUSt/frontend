@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/api_service.dart';
 import '../../data/wordJson.dart';
-int globalWordsLength = 0;
+import '../global_state.dart';
 
 class WordBookView extends StatefulWidget {
   @override
@@ -42,7 +42,7 @@ class _WordBookViewState extends State<WordBookView> {
   void loadWordsData() async {
     try {
       words = await getWordbook(1);
-      globalWordsLength = words.length;
+      updateGlobalWordsLength(words.length); // Update global length
       print("Loaded ${globalWordsLength} words.");
       setState(() {});
     } catch (e) {
@@ -261,6 +261,12 @@ class _WordBookViewState extends State<WordBookView> {
                   );
                 },
                 separatorBuilder: (context, index) {
+                  // 필터링된 항목들 사이에만 디바이더를 표시
+                  Word word = words[index];
+                  bool shouldDisplay = (selection[0] &&
+                      memorizedWords.contains(word.spell)) ||
+                      (selection[1] && !memorizedWords.contains(word.spell));
+                  if (!shouldDisplay) return SizedBox.shrink();
                   return Divider(thickness: 1);
                 },
               ),

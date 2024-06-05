@@ -3,10 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:must/View/Widget/SongDetailCard.dart';
 
+import '../../data/api_service.dart';
+import '../../data/musicWordJson.dart';
+import '../../data/wordJson.dart';
+import '../global_state.dart';
+
 
 class SongDetail extends StatefulWidget {
   SongDetail({required this.musicInfo, super.key});
-
   List musicInfo;
 
   @override
@@ -16,8 +20,23 @@ class SongDetail extends StatefulWidget {
 class _SongDetailState extends State<SongDetail> {
   _SongDetailState({required this.musicInfo});
 
+  List<SongWord> words = [];
   List musicInfo;
   bool _isChecked = false;
+  @override
+  void initState() {
+    super.initState();
+    loadWordsData();
+  }
+
+  void loadWordsData() async {
+    try {
+      words = await getSongWordbook(1);
+      setState(() {});
+    } catch (e) {
+      print('Error loading word data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

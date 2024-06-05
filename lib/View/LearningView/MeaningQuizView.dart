@@ -179,7 +179,7 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "의미 퀴즈",
+          "뜻 맞추기",
           style: myStyle.textTheme.labelMedium,
         ),
         backgroundColor: Colors.white,

@@ -70,7 +70,7 @@ class _NavigationTemState extends State<NavigationTem> {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -103,25 +103,30 @@ class _NavigationTemState extends State<NavigationTem> {
                   ),
                   Expanded(
                     flex: 2,
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.play_arrow_outlined,
-                            size: 35.h,
-                            color: myStyle.mainColor,
-                          ),
-                          Text(
-                            "학습 바로가기",
-                            style: TextStyle(
-                                fontSize: 14.sp,
-                                fontFamily: 'NotoSansCJK',
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFFCC2036)),
-                          ),
-                        ],
+                    child: InkWell(
+                      onTap: (){
+                        Get.to(()=>SongDetailView(song: songs[0], thumbnail: thumbnails[songs[0].songId]));
+                      },
+                      child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.play_arrow_outlined,
+                              size: 35.h,
+                              color: myStyle.mainColor,
+                            ),
+                            Text(
+                              "학습 바로가기",
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontFamily: 'NotoSansCJK',
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFCC2036)),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

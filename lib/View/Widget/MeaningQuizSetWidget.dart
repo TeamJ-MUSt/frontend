@@ -31,6 +31,7 @@ class _MeaningQuizSetWidgetState extends State<MeaningQuizSetWidget> {
   void loadQuizData() async {
     //퀴즈조회
     var quizSet = await fetchQuizData(widget.songId,'MEANING');
+    print(quizSet.success);
     if (quizSet.success) {
       showDialog(
         context: context,

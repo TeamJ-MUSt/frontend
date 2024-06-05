@@ -13,13 +13,13 @@ class RecommandWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5.h),
-      height: 50.h,
+      height: 80.h,
       child: Row(
         children: [
           SizedBox(
-            width: 50.w,
+            width: 90.w,
             child: thumbnail != null
-                ? Image.memory(thumbnail!, width: 50, height: 50)
+                ? Image.memory(thumbnail!, width: 70.w, height: 70.h,fit:BoxFit.fitHeight)
                 : Container(width: 50, height: 50, color: Colors.grey),
           ),
           SizedBox(width: 5.w,),

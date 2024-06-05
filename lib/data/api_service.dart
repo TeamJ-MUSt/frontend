@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'ReadingQuizParsing.dart';
 import 'SeqQuizJson.dart';
 import 'SeqQuizJson2.dart';
+import 'musicWordJson.dart';
 
 String ip ='222.108.102.12:9090';
 // String ip ='192.168.0.2:8080';
@@ -127,25 +128,7 @@ Future<List<int>> getHadList() async {
 // 내 DB에서 노래를 검색합니다
 //DB+내꺼
 // /song/searchV2?title=노래제목&artist=가수&memberId=멤버아이디
-Future<List<SearchSong>> searchSongData(String? query) async {
-  var url = Uri.parse('http://${ip}/1/search?artist=${query}');
-  try {
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var decodedBody = utf8.decode(response.bodyBytes);
-      print('Response body: $decodedBody');
-      // SearchSong searchSong = searchSongFromJson(decodedBody);
-      List<SearchSong> song = searchSongsFromJson(decodedBody);
-      return song;
-    } else {
-      print('One or both responses failed');
-      throw Exception('Failed to load song data due to server response: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Failed to make request: $e');
-    throw Exception('Failed to process request: $e'); // Ensure you throw an exception here
-  }
-}
+
 class ApiResponse {
   final bool success;
   final List<SearchSong> songs;
@@ -164,7 +147,7 @@ class ApiResponse {
 
 // 전체 DB에서 노래 검색
 Future<ApiResponse> searchSongData2(String query) async {
-  final response = await http.get(Uri.parse('http://${ip}/song/searchV2?artist=${query}&memberId=1'));
+  final response = await http.get(Uri.parse('http://${ip}/song/search?artist=${query}&memberId=1'));
 
   if (response.statusCode == 200) {
     final jsonResponse = json.decode(response.body);
@@ -402,6 +385,25 @@ Future<List<Word>> getWordbook(int memberId) async {
     throw Exception('Failed to fetch data: $e');
   }
 }
+
+
+
+Future<List<SongWord>> getSongWordbook(int songId) async {
+  var url = Uri.parse('http://$ip/song/words?songId=$songId');
+  try {
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var decodedBody = utf8.decode(response.bodyBytes);
+      return WordParser.parseMusicWordList(decodedBody);  // Parse the JSON correctly
+    } else {
+      throw Exception('Failed to load word data with status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Failed to fetch data: $e');
+    throw Exception('Failed to fetch data: $e');
+  }
+}
+
 
 //퀴즈 풀고 단어장으로 보내기
 Future<bool> quiz2Word(int songId) async{

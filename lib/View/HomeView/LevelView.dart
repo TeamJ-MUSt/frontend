@@ -17,6 +17,7 @@ class LevelView extends StatefulWidget {
 class _LevelViewState extends State<LevelView> {
   List<SearchSong> songs = [];
   Map<int, Uint8List> thumbnails = {};
+  int? selectedLevel; // Variable to hold the selected level
 
   @override
   void initState() {
@@ -29,10 +30,10 @@ class _LevelViewState extends State<LevelView> {
       songs = await fetchSongData();
       print('fetch end');
       for (var song in songs) {
-        if (song.songId != null) { //노래 데이터를 찾으면 썸네일을 가져옵니다
+        if (song.songId != null) {
           Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
           if (thumbnail != null) {
-            thumbnails[song.songId] = thumbnail; // Correct key to songId
+            thumbnails[song.songId] = thumbnail;
             print('Thumbnail for song ID ${song.songId} fetched');
           }
         } else {
@@ -47,14 +48,95 @@ class _LevelViewState extends State<LevelView> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 15.w),
-        child:
-        ListView.builder(
-            itemCount: songs.length,
-            itemBuilder: (context, index) {
-              SearchSong song = songs[index]; // Retrieve the thumbnail using songId
-              return mySongListWidget(song: song,thumbnail: thumbnails[song.songId],);
-              // return NoImageSongList(song: song,);
-            }));
-  }}
+    // Filter the songs based on the selected level
+    List<SearchSong> filteredSongs = selectedLevel != null
+        ? songs.where((song) => song.level == selectedLevel).toList()
+        : songs;
+    return Scaffold(
+      body: Column(
+        children: [
+          // Dropdown menu for selecting levels
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 15.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedLevel = null;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(10.w, 20.h),
+                    backgroundColor: selectedLevel == null ? myStyle.mainColor : Colors.grey, // Specify the height
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  ),
+                  child: Text('All Levels',style: myStyle.textTheme.headlineMedium,),
+                ),
+                SizedBox(width: 7.w,),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedLevel = 1;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(10.w, 20.h), // Specify the height
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    backgroundColor: selectedLevel == 1 ? myStyle.mainColor : Colors.grey,
+                  ),
+                  child: Text('쉬움',style: TextStyle(fontSize: 12.sp,fontFamily: 'NotoSansCJK',color: Colors.white)),
+                ),
+                SizedBox(width: 7.w,),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedLevel = 2;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(10.w, 20.h), // Specify the height
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    backgroundColor: selectedLevel == 2 ? myStyle.mainColor : Colors.grey,
+                  ),
+                  child: Text('보통', style: TextStyle(fontSize: 12.sp,fontFamily: 'NotoSansCJK',color: Colors.white)),
+                ),
+                SizedBox(width: 7.w,),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedLevel = 3;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(10.w, 20.h), backgroundColor: selectedLevel == 3 ? myStyle.mainColor : Colors.grey, // Specify the height
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                  ),
+                  child: Text('어려움',style: TextStyle(fontSize: 12.sp,fontFamily: 'NotoSansCJK',color: Colors.white)),
+                ),
+
+              ],
+            ),
+          ),
+          // List of songs filtered by selected level
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 15.w),
+              child: ListView.builder(
+                itemCount: filteredSongs.length,
+                itemBuilder: (context, index) {
+                  SearchSong song = filteredSongs[index];
+                  return mySongListWidget(
+                    song: song,
+                    thumbnail: thumbnails[song.songId],
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

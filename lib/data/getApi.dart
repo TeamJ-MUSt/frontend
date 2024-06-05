@@ -1,9 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
-
-
-
+import 'package:must/data/specialData.dart';
 
 Future<String> getTranslation_papago(String text) async {
   // String _client_id = "client_id";
@@ -33,5 +32,41 @@ Future<String> getTranslation_papago(String text) async {
   } else {
     print(trans.statusCode);
     return "ERROR";
+  }
+}
+
+
+Future<SpecialData> loadSpecialData() async {
+  try {
+    String jsonString = await rootBundle.loadString('assets/specialData.json');
+    print('JSON String: $jsonString');
+    final List<dynamic> jsonData = json.decode(jsonString);
+    print('JSON Data: $jsonData');
+    final List<SpecialData> specialDataList = jsonData.map((item) {
+      return SpecialData.fromJson(item);
+    }).toList();
+    print('SpecialData List: $specialDataList');
+    final Random random = Random();
+    int randomIndex = random.nextInt(specialDataList.length);
+    print('Selected SpecialData: ${specialDataList[randomIndex].word}');
+    return specialDataList[randomIndex];
+  } catch (e) {
+    print('Error loading special data: $e');
+    throw Exception('Failed to load special data');
+  }
+}
+
+
+Future<List<dynamic>> loadSpecialData2() async {
+  try {
+    String jsonString = await rootBundle.loadString('assets/specialData.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+    return jsonData.map((item) {
+      final specialDataList = SpecialData.fromJson(item);
+      return specialDataList;
+    }).toList();
+  } catch (e) {
+    print('Error loading quiz data: $e');
+    throw Exception('Failed to load quiz data');
   }
 }

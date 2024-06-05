@@ -73,6 +73,7 @@ flutter:
      - assets/quizData.json
      - assets/wordData.json
      - assets/seqQuizData.json
+     - assets/specialData.json
      - assets/splash_image.png
      - assets/api-icon.png
      - .env

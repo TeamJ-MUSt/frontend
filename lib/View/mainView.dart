@@ -28,6 +28,7 @@ class _MainViewState extends State<MainView> {
   final FocusNode _searchFocusNode =
       FocusNode(); // 검색 TextField를 위한 FocusNode 추가
 
+
   final List<Widget> _widgetOptions = <Widget>[
     HomeView(),
     WordBookView(),
@@ -73,25 +74,6 @@ class _MainViewState extends State<MainView> {
       // TextField가 비어있다면 포커스를 줍니다.
       print("empty");
       FocusScope.of(context).requestFocus(_searchFocusNode);
-    }
-  }
-  List<SearchSong> _songs = [];
-
-  void performSearch(String query)async {
-    // TODO: 검색 기능
-    try {
-      var songs = await searchSongData(query); // Make sure to await the future
-    setState(() {
-      _songs = songs;
-      print("search result $_songs}");
-    });
-    if (_songs.isNotEmpty) {
-      Get.to(() => SearchView(query:query)); // Navigate only if there are results
-    } else {
-      print("No results found for the query.");
-    }
-    } catch (e) {
-      print('Exception caught: $e');
     }
   }
 

@@ -16,8 +16,8 @@ class Word {
     required this.japPro,
     required this.classOfWord,
     required this.meaning,
-    required this.involvedSongs,
-  });
+    required List<String> involvedSongs,
+  }) : involvedSongs = List<String>.from(involvedSongs.toSet().toList());
 
   factory Word.fromJson(Map<String, dynamic> json) => Word(
     id: json["id"],
