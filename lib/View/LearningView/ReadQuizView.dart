@@ -260,32 +260,33 @@ class _ReadQuizViewState extends State<ReadQuizView>
                               updateQuizDisplay(
                                   currentQuizIndex); // Move to the next question
                             } else {
-                              Get.off(() => QuizEndView(correctCnt: correctCnt));
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    FutureBuilder<AlertDialog>(
-                                  future: endQuiz(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot<AlertDialog> snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return AlertDialog(
-                                          content:
-                                              Text("오류 발생: ${snapshot.error}"),
-                                        );
-                                      } else {
-                                        return snapshot.data!;
-                                      }
-                                    } else {
-                                      return AlertDialog(
-                                        content: CircularProgressIndicator(),
-                                      );
-                                    }
-                                  },
-                                ),
-                              );
+                              Get.off(
+                                  () => QuizEndView(correctCnt: correctCnt));
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) =>
+                              //       FutureBuilder<AlertDialog>(
+                              //     future: endQuiz(),
+                              //     builder: (BuildContext context,
+                              //         AsyncSnapshot<AlertDialog> snapshot) {
+                              //       if (snapshot.connectionState ==
+                              //           ConnectionState.done) {
+                              //         if (snapshot.hasError) {
+                              //           return AlertDialog(
+                              //             content:
+                              //                 Text("오류 발생: ${snapshot.error}"),
+                              //           );
+                              //         } else {
+                              //           return snapshot.data!;
+                              //         }
+                              //       } else {
+                              //         return AlertDialog(
+                              //           content: CircularProgressIndicator(),
+                              //         );
+                              //       }
+                              //     },
+                              //   ),
+                              // );
                             }
                           } else {
                             submitAnswer();
@@ -323,32 +324,34 @@ class _ReadQuizViewState extends State<ReadQuizView>
             ],
           ),
         ),
-          Positioned(
-            right: 125.w,
-            bottom: resultMessage == '정답입니다!' ? 360.h:300.h,
-            child: ScaleTransition(
-              scale: _animation,
-              child: Container(
-                width: 120.w,
-                height: 120.w,
-                decoration: resultMessage == '정답입니다!' ? BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.green,
-                    style: BorderStyle.solid,
-                    width: 7,
-                  ),
-                ) : BoxDecoration(),
-                child: Center(
-                  child: Icon(
-                    Icons.close,
-                    size: resultMessage == '정답입니다!' ? 0.w : 110.w,
-                    color: Colors.red,
-                  ),
+        Positioned(
+          right: 125.w,
+          bottom: resultMessage == '정답입니다!' ? 360.h : 300.h,
+          child: ScaleTransition(
+            scale: _animation,
+            child: Container(
+              width: 120.w,
+              height: 120.w,
+              decoration: resultMessage == '정답입니다!'
+                  ? BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.green,
+                        style: BorderStyle.solid,
+                        width: 7,
+                      ),
+                    )
+                  : BoxDecoration(),
+              child: Center(
+                child: Icon(
+                  Icons.close,
+                  size: resultMessage == '정답입니다!' ? 0.w : 110.w,
+                  color: Colors.red,
                 ),
               ),
             ),
           ),
+        ),
       ],
     );
   }

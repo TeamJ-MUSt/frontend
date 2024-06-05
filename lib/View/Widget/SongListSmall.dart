@@ -19,7 +19,7 @@ class SongListSmall extends StatelessWidget {
     return InkWell(
       onTap: () {
         //등록
-        enrollSongData(song.songId);
+        enrollSongData(song.songId, song.bugsId);
         Get.to(() => PerformEnroll(
           song: song,
           thumbnail: thumbnail,

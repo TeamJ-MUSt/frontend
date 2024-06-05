@@ -29,7 +29,7 @@ class findDataViewSongWidget extends StatelessWidget {
                 thumbnail: thumbnail,
               ));
         }else{
-          enrollSongData(song.songId);
+          enrollSongData(song.songId, song.bugsId);
           Get.to(() => PerformEnroll(
             song: song,
             thumbnail: thumbnail,

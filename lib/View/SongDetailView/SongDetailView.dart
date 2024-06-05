@@ -118,7 +118,7 @@ class _SongDetailViewState extends State<SongDetailView> {
                       padding:
                           EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),
                       child: Text(
-                        song.lyrics.replaceAll('\\n', '\n'),
+                        song.lyrics!.replaceAll('\\n', '\n'),
                         style: TextStyle(fontSize: 13.sp, height: 1.5),
                       ),
                     ),

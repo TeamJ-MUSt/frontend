@@ -54,8 +54,8 @@ class _MyLearningViewState extends State<MyLearningView> {
 
   Future<void> getWordlength() async{
     try {
-      List<Word> loadedWords = await getWordbook(1);
-      updateGlobalWordsLength(loadedWords.length); // Update global length
+      words = await getWordbook(1);
+      updateGlobalWordsLength(words.length);
     }catch(e){
       print(e);
     }

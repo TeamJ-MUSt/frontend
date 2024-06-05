@@ -15,8 +15,8 @@ import 'SeqQuizJson.dart';
 import 'SeqQuizJson2.dart';
 import 'musicWordJson.dart';
 
-String ip ='222.108.102.12:9090';
-// String ip ='192.168.0.2:8080';
+// String ip ='222.108.102.12:9090';
+String ip ='192.168.1.79:8080';
 Uint8List decodeBase64(String base64String) {
   return base64.decode(base64String);
 }
@@ -28,16 +28,11 @@ class quizSet {
   quizSet(this.success, this.setNum);
 }
 
-// 노래를 등록합니다
-
-Future<void> findSearchSongwithId(int songId) async{
-
-}
 
 // 크롤링
 
-Future<void> enrollSongData(int songId) async {
-  var url = Uri.parse('http://${ip}/songs/new?memberId=1&songId=${songId}');
+Future<void> enrollSongData(int songId,String bugsId) async {
+  var url = Uri.parse('http://${ip}/songs/new?memberId=1&songId=${songId}&bugsId=${bugsId}');
   String result;
   try {
     var response = await http.post(url);
@@ -60,7 +55,7 @@ Future<void> enrollSongData(int songId) async {
 // 노래에 맞는 썸네일을 가져옵니다
 Future<Uint8List?>fetchSongThumbnail(int songID) async {
   Uint8List? imageBytes;
-  var url = Uri.parse('http://${ip}/image/${songID}');
+  var url = Uri.parse('http://${ip}/image/small/${songID}');
   try {
     var response2 = await http.get(url);
     if (response2.statusCode == 200 &&
@@ -194,6 +189,7 @@ Future<bool> isCreateQuiz(String quizType, int songId) async {
       var decodedBody = utf8.decode(response.bodyBytes);
       var jsonData = json.decode(decodedBody);
       bool isCreated = jsonData['success'];
+      print(response);
       return isCreated;
     }
   }catch(e,s){
@@ -209,6 +205,7 @@ Future<List<MeanQuiz>> getMeanQuizSet(int setNum, int songId) async {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
+      print("get mean quiz");
       return meanQuizFromJson(decodedBody);  // Ensure this function is defined correctly
     } else {
       throw Exception('Failed to load quiz data with status code: ${response.statusCode}');
@@ -246,6 +243,7 @@ Future<List<MeanQuiz>> createMeanQuizSet(int setNum, int songId) async {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
+      print("create MeanQuizset");
       return meanQuizFromJson(decodedBody);  // Ensure this function is defined correctly
     } else {
       throw Exception('Failed to load quiz data with status code: ${response.statusCode}');
@@ -266,6 +264,7 @@ Future<quizSet> fetchQuizData(int songId, String quizType) async {
       var checkBody = jsonDecode(utf8.decode(response.bodyBytes));
       bool success = checkBody['success'];
       int setNum = checkBody['setNum'];
+      print("setNum:$setNum");
       return quizSet(success, setNum);
     } else {
       print('Failed with status code: ${response.statusCode}');
@@ -442,4 +441,3 @@ Future<List<SimWord>> simWordget(int wordId) async {
 }
 
 //유사단어 추가
-

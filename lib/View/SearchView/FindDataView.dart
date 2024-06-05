@@ -10,7 +10,7 @@ import '../Widget/findDataViewSongWidget.dart';
 
 class FindDataView extends StatelessWidget {
   String query;
-  AsyncSnapshot<List<SearchSong>> snapshot;
+  List<SearchSong> snapshot;
   var thumbnail;
 
   FindDataView({required this.query, required this.snapshot, required this.thumbnail,super.key});
@@ -29,9 +29,9 @@ class FindDataView extends StatelessWidget {
           Flexible(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: snapshot.data!.length,
+              itemCount: snapshot!.length,
               itemBuilder: (context, index) {
-                SearchSong songs = snapshot.data![index];
+                SearchSong songs = snapshot![index];
                 Text(songs.level.toString());
                 print(songs.level);
                 return findDataViewSongWidget(song: songs,thumbnail: thumbnail,);

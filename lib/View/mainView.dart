@@ -26,7 +26,7 @@ class _MainViewState extends State<MainView> {
   int _selectedIndex = 0;
   final TextEditingController _searchQueryController = TextEditingController();
   final FocusNode _searchFocusNode =
-      FocusNode(); // 검색 TextField를 위한 FocusNode 추가
+  FocusNode(); // 검색 TextField를 위한 FocusNode 추가
 
 
   final List<Widget> _widgetOptions = <Widget>[
@@ -102,7 +102,7 @@ class _MainViewState extends State<MainView> {
                   contentPadding: EdgeInsets.symmetric(vertical: 10),
                   isDense: true,
                   enabledBorder:
-                      OutlineInputBorder(borderSide: BorderSide.none),
+                  OutlineInputBorder(borderSide: BorderSide.none),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                         color: myStyle.mainColor, width: 1.0), // 활성 상태일 때 보더 없앰

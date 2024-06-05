@@ -39,16 +39,12 @@ Future<String> getTranslation_papago(String text) async {
 Future<SpecialData> loadSpecialData() async {
   try {
     String jsonString = await rootBundle.loadString('assets/specialData.json');
-    print('JSON String: $jsonString');
     final List<dynamic> jsonData = json.decode(jsonString);
-    print('JSON Data: $jsonData');
     final List<SpecialData> specialDataList = jsonData.map((item) {
       return SpecialData.fromJson(item);
     }).toList();
-    print('SpecialData List: $specialDataList');
     final Random random = Random();
     int randomIndex = random.nextInt(specialDataList.length);
-    print('Selected SpecialData: ${specialDataList[randomIndex].word}');
     return specialDataList[randomIndex];
   } catch (e) {
     print('Error loading special data: $e');

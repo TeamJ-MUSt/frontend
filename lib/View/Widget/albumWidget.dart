@@ -32,7 +32,7 @@ class AlbumWidget extends StatelessWidget {
                 songs[index].title,
                 songs[index].artist,
                 thumbnail,
-                songs[index].lyrics.replaceAll('\n', '\\n'),
+                songs[index].lyrics?.replaceAll('\n', '\\n'),
               ];
               Get.to(() => SongDetail(musicInfo:selectSong));
             },

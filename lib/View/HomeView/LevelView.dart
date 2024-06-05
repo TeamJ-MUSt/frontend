@@ -72,7 +72,7 @@ class _LevelViewState extends State<LevelView> {
                     backgroundColor: selectedLevel == null ? myStyle.mainColor : Colors.grey, // Specify the height
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   ),
-                  child: Text('All Levels',style: myStyle.textTheme.headlineMedium,),
+                  child: Text('전체', style: TextStyle(fontSize: 12.sp,fontFamily: 'NotoSansCJK',color: Colors.white)),
                 ),
                 SizedBox(width: 7.w,),
                 ElevatedButton(

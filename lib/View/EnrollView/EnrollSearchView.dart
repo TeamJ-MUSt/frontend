@@ -31,6 +31,7 @@ class _EnrollSearchViewState extends State<EnrollSearchView> {
     try {
       List<SearchSong> songs = await CrawlingSongData(widget.query);
       for (var song in songs) {
+        print("songId: ${song.songId} bugsId: ${song.bugsId}");
         if (song.songId != null) {
           Uint8List? thumbnail = await fetchSongThumbnail(song.songId);
           if (thumbnail != null) {
