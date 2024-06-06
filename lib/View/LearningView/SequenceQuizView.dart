@@ -103,10 +103,20 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
     });
   }
 
+
+  String arrangeLyrics(String lyrics){
+    String returnLyric;
+    returnLyric = lyrics.replaceAll(' ', '');
+    returnLyric = returnLyric.replaceAll("​","");
+    returnLyric = returnLyric.replaceAll("「","");
+    returnLyric = returnLyric.replaceAll("」","");
+    return returnLyric;
+  }
+
   void submitAnswer() {
     setState(() {
       isSubmit = true;
-      String real_answer = quizzes[currentQuizIndex].answers[0].replaceAll(' ', '');
+      String real_answer = arrangeLyrics(quizzes[currentQuizIndex].answers[0]);
       String selectedWords = selectedIndices.map((i) => quizzes[currentQuizIndex].choices[i]).join('');
       if (selectedWords == real_answer) {
         isCorrect = true;
@@ -266,6 +276,20 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                   ),
                 ),
                 SizedBox(height: 20),
+                Padding(
+                  padding:
+                  EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
+                  child: InkWell(
+                    onTap: (){
+                      currentQuizIndex = quizzes.length - 1;
+                      goToNextQuiz();
+                    },
+                    child: Text(
+                      "마지막으로 건너뛰기",
+                      style: myStyle.textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
                 if (isSubmit && !isCorrect)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),

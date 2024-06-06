@@ -254,6 +254,7 @@ class _ReadQuizViewState extends State<ReadQuizView>
                               updateQuizDisplay(
                                   currentQuizIndex); // Move to the next question
                             } else {
+                              endQuiz();
                               Get.off(
                                   () => QuizEndView(correctCnt: correctCnt));
                               // showDialog(

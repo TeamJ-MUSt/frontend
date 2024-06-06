@@ -76,40 +76,56 @@ class _WordBookViewState extends State<WordBookView> {
 
   void showWordDialog(BuildContext context, Word word) async {
     List<SimWord> wordlist = await simWordget(word.id);
-    showDialog(
+    if(wordlist != null || wordlist.length != 0){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("${word.spell}의 유사단어"),
+            alignment: Alignment.center,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                wordlist.length,
+                (index) {
+                  SimWord simWord = wordlist[index];
+                  return ListTile(
+                    title: Text(simWord.spell),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('읽기: ${simWord.japPro}'),
+                        Text('품사: ${simWord.classOfWord}'),
+                        Text('뜻: ${simWord.meaning.join(', ')}'),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actions: [
+              TextButton(
+                child: Text('닫기'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+    else{
+      showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("${word.spell}의 유사단어"),
           alignment: Alignment.center,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              wordlist.length,
-                  (index) {
-                SimWord simWord = wordlist[index];
-                return ListTile(
-                  title: Text(simWord.spell),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('읽기: ${simWord.japPro}'),
-                      Text('품사: ${simWord.classOfWord}'),
-                      Text('뜻: ${simWord.meaning.join(', ')}'),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+          content: Center(child: Text("유사단어가 없습니다"),),
           actionsAlignment: MainAxisAlignment.spaceEvenly,
           actions: [
-            TextButton(
-              child: Text('추가'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
             TextButton(
               child: Text('닫기'),
               onPressed: () {
@@ -119,7 +135,7 @@ class _WordBookViewState extends State<WordBookView> {
           ],
         );
       },
-    );
+    );}
   }
 
   @override

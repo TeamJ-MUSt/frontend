@@ -20,6 +20,11 @@ class SongWord {
   });
 
   factory SongWord.fromJson(Map<String, dynamic> json) {
+    List<String> involvedSongs = List<String>.from(json['involvedSongs']);
+    if (involvedSongs.length > 4) {
+      involvedSongs = involvedSongs.sublist(0, 4);
+    }
+
     return SongWord(
       id: json['id'],
       spell: json['spell'],
@@ -27,7 +32,7 @@ class SongWord {
       japPro: json['japPro'],
       classOfWord: json['classOfWord'],
       meaning: List<String>.from(json['meaning']),
-      involvedSongs: List<String>.from(json['involvedSongs']),
+      involvedSongs: involvedSongs,
     );
   }
 }

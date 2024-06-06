@@ -9,7 +9,7 @@ class EnrollController extends GetxController {
       "등록 중",
       "노래 등록이 진행 중입니다...",
       showProgressIndicator: true,
-      snackPosition: SnackPosition.TOP,
+      snackPosition: SnackPosition.BOTTOM,
       duration: Duration(minutes: 10), // 충분히 긴 시간으로 설정
       isDismissible: false,
     );
@@ -21,7 +21,7 @@ class EnrollController extends GetxController {
     Get.snackbar(
       "등록 완료",
       "노래 등록이 완료되었습니다.",
-      snackPosition: SnackPosition.TOP,
+      snackPosition: SnackPosition.BOTTOM,
       duration: Duration(seconds: 3),
     );
   }

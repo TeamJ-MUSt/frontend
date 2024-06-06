@@ -34,6 +34,9 @@ class _PerformEnrollState extends State<PerformEnroll> {
   void _enrollSong() async {
     enrollController.startLoading();
     await enrollSongData(widget.song.songId, widget.song.bugsId);
+    await createQuiz(widget.song.songId, "MEANING");
+    await createQuiz(widget.song.songId, "READING");
+    await createQuiz(widget.song.songId, "SENTENCE");
     enrollController.stopLoading();
   }
 

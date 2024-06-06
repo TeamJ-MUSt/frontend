@@ -20,6 +20,7 @@ class NavigationTem extends StatefulWidget {
 class _NavigationTemState extends State<NavigationTem> {
   List<SearchSong> songs = [];
   Map<int, Uint8List> thumbnails = {};
+  List<int> displayIndexes = [3, 1, 6, 10, 13, 11, 14, 4, 40, 18 ]; // 여기서 특정 인덱스를 지정합니다.
 
   @override
   void initState() {
@@ -94,7 +95,6 @@ class _NavigationTemState extends State<NavigationTem> {
                             )
                           else
                             Container(
-                              // width: 50.w,
                               height: 70.h,
                               color: Colors.white,
                             ),
@@ -105,8 +105,8 @@ class _NavigationTemState extends State<NavigationTem> {
                   Expanded(
                     flex: 2,
                     child: InkWell(
-                      onTap: (){
-                        Get.to(()=>SongDetailView(song: songs[0], thumbnail: thumbnails[songs[0].songId]));
+                      onTap: () {
+                        Get.to(() => SongDetailView(song: songs[0], thumbnail: thumbnails[songs[0].songId]));
                       },
                       child: Container(
                         color: Colors.white,
@@ -144,21 +144,25 @@ class _NavigationTemState extends State<NavigationTem> {
           ),
           Expanded(
             child: GridView.builder(
-              itemCount: songs.length,
+              itemCount: displayIndexes.length, // displayIndexes를 기준으로 항목 수 설정
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 childAspectRatio: (5 / 7),
                 crossAxisSpacing: 3.w,
               ),
               itemBuilder: (context, index) {
+                int displayIndex = displayIndexes[index];
+                if (displayIndex - 1 >= songs.length) {
+                  return SizedBox(); // 범위를 벗어난 경우 빈 위젯 반환
+                }
                 return GestureDetector(
                   onTap: () {
                     Get.to(() => SongDetailView(
-                      song: songs[index],
-                      thumbnail: thumbnails[songs[index].songId],
+                      song: songs[displayIndex - 1],
+                      thumbnail: thumbnails[songs[displayIndex - 1].songId],
                     ));
                   },
-                  child: SingleChildScrollView(
+                  child: Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -168,9 +172,9 @@ class _NavigationTemState extends State<NavigationTem> {
                           ),
                           width: 95.w,
                           height: 90.h,
-                          child: thumbnails[songs[index].songId] != null
+                          child: thumbnails[songs[displayIndex - 1].songId] != null
                               ? Image.memory(
-                            thumbnails[songs[index].songId]!,
+                            thumbnails[songs[displayIndex - 1].songId]!,
                             fit: BoxFit.fitWidth,
                           )
                               : Container(
@@ -180,11 +184,13 @@ class _NavigationTemState extends State<NavigationTem> {
                           ),
                         ),
                         Text(
-                          songs[index].title,
+                          songs[displayIndex - 1].title,
+                          overflow: TextOverflow.ellipsis,
                           style: myStyle.textTheme.labelLarge,
                         ),
                         Text(
-                          songs[index].artist,
+                          songs[displayIndex - 1].artist,
+                          overflow: TextOverflow.ellipsis,
                           style: myStyle.textTheme.displaySmall,
                         ),
                       ],
@@ -199,4 +205,3 @@ class _NavigationTemState extends State<NavigationTem> {
     );
   }
 }
-

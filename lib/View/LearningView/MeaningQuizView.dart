@@ -252,9 +252,11 @@ class _MeaningQuizViewState extends State<MeaningQuizView>
                                   1); // Move to the next question
                             } else {
                               // 퀴즈가 끝났을 때
-                              Get.until((route) =>
-                                  Get.previousRoute == '/'); // 스택에서 두 개의 화면 제거
-                              Get.to(() => QuizEndView(correctCnt: correctCnt));
+                              // Get.until((route) =>
+                              //     Get.previousRoute == '/'); // 스택에서 두 개의 화면 제거
+                              endQuiz();
+                              Get.off(
+                                      () => QuizEndView(correctCnt: correctCnt));
                               // Get.offAll(() => QuizEndView(correctCnt: correctCnt,));
                             }
                           } else {

@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:must/data/MeaningQuizParsing.dart';
@@ -29,11 +30,35 @@ class quizSet {
   quizSet(this.success, this.setNum);
 }
 
+
+Future<bool> createQuiz(int songId, String quizType) async {
+  var url = Uri.parse('http://${ip}/quiz/new?songId=${songId}&type=${quizType}');
+  try {
+    var response = await http.post(url);
+    if (response.statusCode == 200) {
+      var decodedBody = utf8.decode(response.bodyBytes);
+      var jsonResponse = jsonDecode(decodedBody);
+
+      if (jsonResponse['success'] == true) {
+        print('Quiz creation successful');
+        return true; // 성공적으로 생성된 경우 true 반환
+      } else {
+        print('Quiz creation failed');
+        return false; // 실패한 경우 false 반환
+      }
+    } else {
+      throw Exception('Failed to load song data');
+    }
+  } catch (e) {
+    print('Failed to make request: $e');
+    return false; // 예외 발생 시 false 반환
+  }
+}
 // 크롤링
 
 Future<void> enrollSongData(int songId, String? bugsId) async {
   var url = Uri.parse(
-      'http://${ip}/songs/new?memberId=1&songId=${songId}&bugsId=${bugsId}');
+      'http://${ip}/songs/new?memberId=152&songId=${songId}&bugsId=${bugsId}');
   String result;
   try {
     print("enrollSongData");
@@ -58,7 +83,7 @@ Future<void> enrollSongData(int songId, String? bugsId) async {
 // 노래에 맞는 썸네일을 가져옵니다
 Future<Uint8List?> fetchSongThumbnail(int songID) async {
   Uint8List? imageBytes;
-  var url = Uri.parse('http://${ip}/image/small/${songID}');
+  var url = Uri.parse('http://${ip}/image/${songID}');
   try {
     var response2 = await http.get(url);
     if (response2.statusCode == 200 &&
@@ -80,7 +105,7 @@ Future<Uint8List?> fetchSongThumbnail(int songID) async {
 // 노래를 가져옵니다
 //
 Future<List<SearchSong>> fetchSongData() async {
-  var url = Uri.parse('http://${ip}/main/songs/1?pageNum=0');
+  var url = Uri.parse('http://${ip}/main/songs/152?pageNum=0');
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
@@ -118,18 +143,13 @@ class ApiResponse {
 }
 
 // 전체 DB에서 노래 검색
-Future<ApiResponse> searchSongData2(String query, String filter) async {
-  String url;
-  if (filter == "가수") {
-    url = 'http://$ip/song/search?artist=$query&memberId=1';
-  } else {
-    url = 'http://$ip/song/search?title=$query&memberId=1';
-  }
+Future<ApiResponse> searchSongData2(String query) async {
+  String url = 'http://$ip/song/search?artist=$query&memberId=152';
 
   final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {
-    final jsonResponse = json.decode(response.body);
+    final jsonResponse = json.decode(utf8.decode(response.bodyBytes));
     return ApiResponse.fromJson(jsonResponse);
   } else {
     throw Exception('Failed to load data');
@@ -164,16 +184,36 @@ Future<List<SearchSong>> CrawlingSongData(String query) async {
 //http://222.108.102.12:9090/quiz/MEANING/set/1?songId=1
 // 퀴즈 조회
 //세트 개수 조회  http://222.108.102.12:9090/quiz/info?songId=1&type=MEANING
+//퀴즈를 가져옵니다/quiz/MEANING/set/1?songId=1
 
+Future<List<ReadQuiz>> getReadQuizSet(int setNum, int songId) async {
+  var url =
+  Uri.parse('http://${ip}/quiz/READING/set/${setNum}?songId=${songId}');
+  try {
+    print(url);
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var decodedBody = utf8.decode(response.bodyBytes);
+      return readQuizFromJson(
+          decodedBody); // Ensure this function is defined correctly
+    } else {
+      throw Exception(
+          'Failed to load quiz data with status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Failed to fetch data: $e');
+    throw Exception('Failed to fetch data: $e');
+  }
+}
 //퀴즈를 가져옵니다/quiz/MEANING/set/1?songId=1
 Future<List<MeanQuiz>> getMeanQuizSet(int setNum, int songId) async {
   var url =
       Uri.parse('http://${ip}/quiz/MEANING/set/${setNum}?songId=${songId}');
   try {
+    print(url);
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
-      print("get mean quiz");
       return meanQuizFromJson(
           decodedBody); // Ensure this function is defined correctly
     } else {
@@ -238,7 +278,7 @@ Future<quizSet> fetchQuizData(int songId, String quizType) async {
 // 퀴즈 이후 단어장 보내기
 Future saveWord(int memberId, int songId) async {
   var url = Uri.parse(
-      'http://${ip}/word-book/new?memberId=${memberId}?songId=${songId}');
+      'http://${ip}/word-book/new?memberId=152&songId=${songId}');
   try {
     var response = await http.post(url);
     if (response.statusCode == 200) {
@@ -256,27 +296,7 @@ Future saveWord(int memberId, int songId) async {
 }
 //-------------------------
 
-//퀴즈를 가져옵니다/quiz/MEANING/set/1?songId=1
 
-Future<List<ReadQuiz>> getReadQuizSet(int setNum, int songId) async {
-  var url =
-      Uri.parse('http://${ip}/quiz/READING/set/${setNum}?songId=${songId}');
-  try {
-    print(url);
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var decodedBody = utf8.decode(response.bodyBytes);
-      return readQuizFromJson(
-          decodedBody); // Ensure this function is defined correctly
-    } else {
-      throw Exception(
-          'Failed to load quiz data with status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Failed to fetch data: $e');
-    throw Exception('Failed to fetch data: $e');
-  }
-}
 //퀴즈를 생성합니다
 
 //퀴즈를 조회합니다 -
@@ -319,12 +339,12 @@ Future<List<SeqQuiz2>> loadQuizData() async {
 
 // 단어장 조회
 Future<List<Word>> getWordbook(int memberId) async {
-  var url = Uri.parse('http://${ip}/word-book/${memberId}');
+  var url = Uri.parse('http://${ip}/word-book/152');
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
-      return Word.parseApiWordList(decodedBody); // Parse the JSON correctly
+      return APIWordParser.parseApiWordList(decodedBody); // Parse the JSON correctly
     } else {
       throw Exception(
           'Failed to load word data with status code: ${response.statusCode}');
@@ -355,7 +375,7 @@ Future<List<SongWord>> getSongWordbook(int songId) async {
 
 //퀴즈 풀고 단어장으로 보내기
 Future<bool> quiz2Word(int songId) async {
-  var url = Uri.parse('http://${ip}/word-book/new?memberId=1&songId=${songId}');
+  var url = Uri.parse('http://${ip}/word-book/new?memberId=152&songId=${songId}');
   try {
     var response = await http.post(url);
     if (response.statusCode == 200) {
@@ -376,12 +396,14 @@ Future<bool> quiz2Word(int songId) async {
 
 Future<List<SimWord>> simWordget(int wordId) async {
   var url = Uri.parse('http://${ip}/word-book/word/${wordId}/similar?num=3');
+  print(wordId);
   try {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
       return SimWord.parseSimWordList(decodedBody); // Parse the JSON correctly
     } else {
+      return
       throw Exception(
           'Failed to load word data with status code: ${response.statusCode}');
     }

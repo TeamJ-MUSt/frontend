@@ -93,7 +93,7 @@ class basicSongListWidget extends StatelessWidget {
                     width: 40.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: song.level != null
+                      color: song.level != 0
                           ? song.level == 1
                           ? Colors.green
                           : song.level == 2
@@ -103,7 +103,7 @@ class basicSongListWidget extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        song.level != null
+                        song.level != 0
                             ? song.level == 1
                             ? "쉬움"
                             : song.level == 2

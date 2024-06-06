@@ -102,32 +102,6 @@ class _MainViewState extends State<MainView> {
                 },
               ),
             ),
-            DropdownButton<String>(
-              value: _selectedFilter,
-              icon: Icon(
-                Icons.arrow_downward,
-                color: myStyle.mainColor,
-              ),
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(color: myStyle.mainColor),
-              underline: Container(
-                height: 2,
-                color: myStyle.mainColor,
-              ),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedFilter = newValue!;
-                });
-              },
-              items: <String>['제목', '가수']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
             IconButton(
               icon: Icon(
                 Icons.search,

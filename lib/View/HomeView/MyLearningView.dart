@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:must/View/BookMarkView.dart';
-import 'package:must/View/MySettingView.dart';
 import 'package:must/View/Widget/FillCard.dart';
 import 'package:must/View/Widget/recommandCard.dart';
 import 'package:must/View/WordBookView/WordBookView.dart';

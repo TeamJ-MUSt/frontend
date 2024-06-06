@@ -34,7 +34,7 @@ class _SearchViewState extends State<SearchView> {
 
   Future<void> fetchSongsAndThumbnails() async {
     try {
-      var response = await searchSongData2(widget.query, widget.filter);
+      var response = await searchSongData2(widget.query);
       if (response.success && response.songs != null) {
         songs = response.songs!;
         print('fetch end');
