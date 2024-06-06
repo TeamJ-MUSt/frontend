@@ -31,8 +31,7 @@ class _MeaningQuizSetWidgetState extends State<MeaningQuizSetWidget> {
   void loadQuizData() async {
     //퀴즈조회
     var quizSet = await fetchQuizData(widget.songId,'MEANING');
-    print(quizSet.success);
-    if (quizSet.success) {
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -76,11 +75,6 @@ class _MeaningQuizSetWidgetState extends State<MeaningQuizSetWidget> {
           );
         },
       );
-    } else {
-      createQuiz('MEANING',widget.songId);
-      print(widget.songId);
-      print("create quizSet");
-    }
   }
 
   @override

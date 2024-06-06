@@ -8,7 +8,7 @@ import 'package:must/data/bookmark_controller.dart';
 
 import '../data/api_service.dart';
 import '../data/searchJson.dart';
-import 'Widget/mySongListWidget.dart';
+import 'Widget/basicSongListWidget.dart';
 
 class BookMarkView extends StatefulWidget {
   const BookMarkView({super.key});
@@ -66,7 +66,7 @@ class _BookMarkViewState extends State<BookMarkView> {
           itemCount: bookmarkedSongs.length,
           itemBuilder: (context, index) {
             SearchSong song = bookmarkedSongs[index];
-            return mySongListWidget(
+            return basicSongListWidget(
               song: song,
               thumbnail: thumbnails[song.songId],
             );

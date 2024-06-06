@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:must/View/WordBookView/wordFilterWidget.dart';
-import 'package:must/data/simWordJson.dart';
 import 'package:must/style.dart' as myStyle;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/api_service.dart';
 import '../../data/musicWordJson.dart';
 import '../../data/searchJson.dart';
-import '../../data/wordJson.dart';
-import '../global_state.dart';
 
 class SongWordBookView extends StatefulWidget {
   SongWordBookView({required this.song, super.key});

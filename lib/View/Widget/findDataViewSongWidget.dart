@@ -100,7 +100,7 @@ class findDataViewSongWidget extends StatelessWidget {
                           : song.level == 2
                           ? "보통"
                           : "어려움"
-                          : "알 수 없음",
+                          : "미등록",
                       style: TextStyle(color: Colors.white, fontSize: 12.sp),
                     ),
                   ),

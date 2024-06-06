@@ -11,7 +11,7 @@ import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
 import '../Widget/findDataViewSongWidget.dart';
-import '../Widget/mySongListWidget.dart';
+import '../Widget/basicSongListWidget.dart';
 
 class SearchView extends StatefulWidget {
   SearchView({required this.query, super.key});

@@ -9,8 +9,8 @@ import '../../data/bookmark_controller.dart';
 import '../../data/searchJson.dart';
 import '../SongDetailView/SongDetailView.dart';
 
-class mySongListWidget extends StatelessWidget {
-  mySongListWidget({required this.song, required this.thumbnail, super.key});
+class basicSongListWidget extends StatelessWidget {
+  basicSongListWidget({required this.song, required this.thumbnail, super.key});
 
   final SearchSong song;
   final Uint8List? thumbnail;

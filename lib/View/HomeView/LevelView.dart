@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:must/View/Widget/mySongListWidget.dart';
+import 'package:must/View/Widget/basicSongListWidget.dart';
 import 'package:must/style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/api_service.dart';
@@ -127,7 +127,7 @@ class _LevelViewState extends State<LevelView> {
                 itemCount: filteredSongs.length,
                 itemBuilder: (context, index) {
                   SearchSong song = filteredSongs[index];
-                  return mySongListWidget(
+                  return basicSongListWidget(
                     song: song,
                     thumbnail: thumbnails[song.songId],
                   );

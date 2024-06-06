@@ -76,7 +76,6 @@ class _ReadQuizSetWidgetState extends State<ReadQuizSetWidget> {
         },
       );
     } else {
-      createQuiz('READING',widget.songId);
       print(widget.songId);
       print("create quizSet");
     }

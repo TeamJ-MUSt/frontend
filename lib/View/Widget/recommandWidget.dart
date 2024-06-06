@@ -13,7 +13,7 @@ class RecommandWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5.h),
-      height: 80.h,
+      height: 75.h,
       child: Row(
         children: [
           SizedBox(

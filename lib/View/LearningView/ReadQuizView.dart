@@ -100,7 +100,6 @@ class _ReadQuizViewState extends State<ReadQuizView>
         print('Quiz data is empty');
       }
     } else {
-      await createQuiz('READING', widget.songId);
       await getQuiz();
     }
   }

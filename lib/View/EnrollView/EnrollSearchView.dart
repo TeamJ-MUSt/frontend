@@ -30,6 +30,7 @@ class _EnrollSearchViewState extends State<EnrollSearchView> {
   Future<List<SearchSong>> fetchSongsAndThumbnails() async {
     try {
       List<SearchSong> songs = await CrawlingSongData(widget.query);
+      if(songs==null) print("research result is null");
       for (var song in songs) {
         print("songId: ${song.songId} bugsId: ${song.bugsId}");
         if (song.songId != null) {

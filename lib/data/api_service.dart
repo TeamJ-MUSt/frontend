@@ -16,7 +16,7 @@ import 'SeqQuizJson2.dart';
 import 'musicWordJson.dart';
 
 // String ip ='222.108.102.12:9090';
-String ip ='192.168.1.79:8080';
+String ip ='10.210.98.59:8080';
 Uint8List decodeBase64(String base64String) {
   return base64.decode(base64String);
 }
@@ -31,7 +31,7 @@ class quizSet {
 
 // 크롤링
 
-Future<void> enrollSongData(int songId,String bugsId) async {
+Future<void> enrollSongData(int songId,String? bugsId) async {
   var url = Uri.parse('http://${ip}/songs/new?memberId=1&songId=${songId}&bugsId=${bugsId}');
   String result;
   try {
@@ -314,20 +314,6 @@ Future<List<ReadQuiz>> getReadQuizSet(int setNum, int songId) async {
 }
 //퀴즈를 생성합니다
 
-Future<void> createQuiz(String quizType, int songId) async {
-  var url = Uri.parse('http://${ip}/quiz/new?songId=${songId}&type=${quizType}');
-  try {
-    var response = await http.post(url);
-    if (response.statusCode == 200) {
-      print("Creating quiz");
-      var decodedBody = utf8.decode(response.bodyBytes);
-      print(response.statusCode);
-      print(decodedBody);
-    }
-  } catch (e, s) {
-    print('Failed to make request for quiz: $e\n');
-  }
-}
 
 
 //퀴즈를 조회합니다 -

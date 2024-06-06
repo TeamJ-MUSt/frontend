@@ -71,7 +71,6 @@ class _SeqQuizSetWidgetState extends State<SeqQuizSetWidget> {
         },
       );
     } else {
-      createQuiz('SENTENCE',widget.songId);
       print(widget.songId);
       print("create quizSet");
     }
