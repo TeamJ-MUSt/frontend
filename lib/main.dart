@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './style.dart' as myStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'EnrollController.dart';
 import 'View/mainView.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); // .env 파일을 로드합니다.
   Get.put(BookmarkController());
+  Get.put(EnrollController());
   runApp(MyApp());
 }
 

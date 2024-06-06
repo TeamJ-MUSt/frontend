@@ -25,7 +25,6 @@ class _MeaningQuizSetWidgetState extends State<MeaningQuizSetWidget> {
   @override
   void initState() {
     super.initState();
-    // loadQuizData();
   }
 
   void loadQuizData() async {

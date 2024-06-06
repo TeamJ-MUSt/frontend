@@ -41,7 +41,7 @@ class _TempSequenceQuizViewState extends State<TempSequenceQuizView> {
   void _translateCurrentQuiz() async {
     try {
       final text = quizzes[currentQuizIndex].answer;
-      final translated = await _translationService.translate(text, 'ko');
+      final translated = await _translationService.translate(text);
       setState(() {
         translatedText = translated;
       });

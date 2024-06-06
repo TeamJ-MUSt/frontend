@@ -30,6 +30,14 @@ class _SongDetailViewState extends State<SongDetailView> {
   var thumbnail;
   bool _isChecked = false;
 
+  String arrangeLyrics(String lyrics){
+    String returnLyric;
+    returnLyric = lyrics.replaceAll('\\n', '\n');
+    returnLyric = returnLyric.replaceAll('["', '');
+    returnLyric = returnLyric.replaceAll('"]', '');
+    return returnLyric;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +126,8 @@ class _SongDetailViewState extends State<SongDetailView> {
                       padding:
                           EdgeInsets.symmetric(vertical: 8.h, horizontal: 5.w),
                       child: Text(
-                        song.lyrics!.replaceAll('\\n', '\n'),
+                        song.lyrics != null ?
+                        arrangeLyrics(song.lyrics!) : "",
                         style: TextStyle(fontSize: 13.sp, height: 1.5),
                       ),
                     ),

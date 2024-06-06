@@ -3,19 +3,16 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:must/View/SearchView/NoDataView.dart';
 import 'package:must/style.dart' as myStyle;
 import '../../data/api_service.dart';
-import '../../data/musicjson.dart';
 import '../../data/searchJson.dart';
 import '../EnrollView/EnrollSearchView.dart';
 import '../Widget/findDataViewSongWidget.dart';
-import '../Widget/basicSongListWidget.dart';
 
 class SearchView extends StatefulWidget {
-  SearchView({required this.query, super.key});
   final String query;
+  final String filter;
+  const SearchView({required this.query, required this.filter, Key? key}) : super(key: key);
 
   @override
   State<SearchView> createState() => _SearchViewState(query: query);
@@ -26,6 +23,8 @@ class _SearchViewState extends State<SearchView> {
   final String query;
   List<SearchSong> songs = [];
   Map<int, Uint8List> thumbnails = {};
+  bool isLoading = true;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -35,7 +34,7 @@ class _SearchViewState extends State<SearchView> {
 
   Future<void> fetchSongsAndThumbnails() async {
     try {
-      var response = await searchSongData2(widget.query);
+      var response = await searchSongData2(widget.query, widget.filter);
       if (response.success && response.songs != null) {
         songs = response.songs!;
         print('fetch end');
@@ -51,12 +50,16 @@ class _SearchViewState extends State<SearchView> {
           }
         }
       } else {
-        print('No songs found or request failed');
+        errorMessage = '원하는 노래가 없나요?';
+        print(errorMessage);
       }
-      setState(() {});
     } catch (e) {
-      print('Error fetching data: $e');
+      errorMessage = 'Error fetching data: $e';
+      print(errorMessage);
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -66,74 +69,55 @@ class _SearchViewState extends State<SearchView> {
         backgroundColor: Colors.white,
         foregroundColor: myStyle.mainColor,
       ),
-      body: FutureBuilder<ApiResponse>(
-        future: searchSongData2(widget.query),
-        builder: (BuildContext context, AsyncSnapshot<ApiResponse> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            print("로딩중");
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Container(
-                color: Colors.blue,
-                child: Text(
-                  'Error: ${snapshot.error}',
-                ),
-              ),
-            );
-          } else if (snapshot.hasData && snapshot.data!.songs.isNotEmpty) {
-            songs = snapshot.data!.songs;
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "등록된 데이터 중에서 ${query}에 대한 검색 결과입니다",
-                    style: myStyle.textTheme.bodyMedium,
-                  ),
-                  Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: songs.length,
-                      itemBuilder: (context, index) {
-                        SearchSong song = songs[index];
-                        print(song.level);
-                        return findDataViewSongWidget(
-                          song: song,
-                          thumbnail: thumbnails[song.songId],
-                        );
-                      },
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Get.to(() => EnrollSearchView(query: query));
-                    },
-                    child: Text(
-                      '원하는 노래가 없나요?',
-                      style: myStyle.textTheme.displayMedium,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Center(
-              child: InkWell(
-                onTap: () {
-                  Get.to(() => EnrollSearchView(query: query));
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : songs.isNotEmpty
+          ? Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "등록된 데이터 중에서 ${query}에 대한 검색 결과입니다",
+              style: myStyle.textTheme.bodyMedium,
+            ),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: songs.length,
+                itemBuilder: (context, index) {
+                  SearchSong song = songs[index];
+                  print(song.level);
+                  return findDataViewSongWidget(
+                    song: song,
+                    thumbnail: thumbnails[song.songId],
+                  );
                 },
-                child: Text(
-                  '원하는 노래가 없나요?',
-                  style: myStyle.textTheme.displayMedium,
-                ),
               ),
-            );
-          }
-        },
+            ),
+            InkWell(
+              onTap: () {
+                Get.to(() => EnrollSearchView(query: query));
+              },
+              child: Text(
+                '원하는 노래가 없나요?',
+                style: myStyle.textTheme.displayMedium,
+              ),
+            ),
+          ],
+        ),
+      )
+          : Center(
+        child: InkWell(
+          onTap: () {
+            Get.to(() => EnrollSearchView(query: query));
+          },
+          child: Text(
+            errorMessage ?? '원하는 노래가 없나요?',
+            style: myStyle.textTheme.displayMedium,
+          ),
+        ),
       ),
     );
   }
-
 }

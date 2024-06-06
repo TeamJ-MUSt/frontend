@@ -23,13 +23,12 @@ class findDataViewSongWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if(song.level != null){
+        if(song.level != null){ //레벨이 없는건 등록전
           Get.to(() => SongDetailView(
                 song: song,
                 thumbnail: thumbnail,
               ));
         }else{
-          enrollSongData(song.songId, song.bugsId);
           Get.to(() => PerformEnroll(
             song: song,
             thumbnail: thumbnail,

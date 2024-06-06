@@ -30,7 +30,7 @@ class _ReadQuizSetWidgetState extends State<ReadQuizSetWidget> {
 
   void loadQuizData() async {
     print('Loading quiz data for songId: ${widget.songId}');
-    var quizSet = await fetchReadQuizData(widget.songId);
+    var quizSet = await fetchQuizData(widget.songId,"READING");
     print('Quiz data fetched: ${quizSet.toString()}');
     if (quizSet.success) {
       showDialog(

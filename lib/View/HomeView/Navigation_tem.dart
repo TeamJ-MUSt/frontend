@@ -31,6 +31,7 @@ class _NavigationTemState extends State<NavigationTem> {
     try {
       songs = await fetchSongData();
       print('fetch end');
+      print(songs);
       for (var song in songs) {
         if (song.songId != null) {
           Uint8List? thumbnail = await fetchSongThumbnail(song.songId);

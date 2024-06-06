@@ -3,19 +3,17 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:must/View/EnrollView/PerformEnroll.dart';
-import 'package:must/View/HomeView/LevelView.dart';
 import 'package:must/View/SongDetailView/SongDetailView.dart';
 import 'package:must/style.dart' as myStyle;
+import '../../EnrollController.dart';
 import '../../data/api_service.dart';
 import '../../data/searchJson.dart';
 import '../mainView.dart';
-import 'package:http/http.dart' as http;
 
 class PerformEnroll extends StatefulWidget {
   PerformEnroll({required this.song, required this.thumbnail, super.key});
 
-  SearchSong song;
+  final SearchSong song;
   var thumbnail;
 
   @override
@@ -23,19 +21,20 @@ class PerformEnroll extends StatefulWidget {
 }
 
 class _PerformEnrollState extends State<PerformEnroll> {
-  bool isLoading = true; // 로딩 상태 변수 추가
+  final EnrollController enrollController = Get.find(); // 전역 컨트롤러 사용
 
   @override
   void initState() {
     super.initState();
-    _enrollSong();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _enrollSong();
+    });
   }
 
   void _enrollSong() async {
+    enrollController.startLoading();
     await enrollSongData(widget.song.songId, widget.song.bugsId);
-    setState(() {
-      isLoading = false; // 로딩 상태 업데이트
-    });
+    enrollController.stopLoading();
   }
 
   @override
@@ -50,45 +49,49 @@ class _PerformEnrollState extends State<PerformEnroll> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 50.h),
-          isLoading
-              ? Column(
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 20.h),
-              Text(
-                "등록 중입니다...",
-                style: TextStyle(
-                    fontSize: 20.sp,
-                    fontFamily: 'NotoSansCJK',
-                    fontWeight: FontWeight.w600,
-                    color: myStyle.mainColor),
-              ),
-            ],
-          )
-              : Column(
-            children: [
-              Text(
-                "등록이 완료되었습니다.",
-                style: TextStyle(
-                    fontSize: 20.sp,
-                    fontFamily: 'NotoSansCJK',
-                    fontWeight: FontWeight.w600,
-                    color: myStyle.mainColor),
-              ),
-              SizedBox(height: 7.h),
-              InkWell(
-                onTap: () {
-                  Get.to(() => SongDetailView(
-                      song: widget.song, thumbnail: widget.thumbnail));
-                },
-                child: Text(
-                  "학습 바로가기 >",
-                  style:
-                  TextStyle(color: myStyle.mainColor, fontSize: 17.sp),
-                ),
-              ),
-            ],
-          ),
+          Obx(() {
+            if (enrollController.isLoading.value) {
+              return Column(
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20.h),
+                  Text(
+                    "등록 중입니다...",
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontFamily: 'NotoSansCJK',
+                        fontWeight: FontWeight.w600,
+                        color: myStyle.mainColor),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  Text(
+                    "등록이 완료되었습니다.",
+                    style: TextStyle(
+                        fontSize: 20.sp,
+                        fontFamily: 'NotoSansCJK',
+                        fontWeight: FontWeight.w600,
+                        color: myStyle.mainColor),
+                  ),
+                  SizedBox(height: 7.h),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => SongDetailView(
+                          song: widget.song, thumbnail: widget.thumbnail));
+                    },
+                    child: Text(
+                      "학습 바로가기 >",
+                      style:
+                      TextStyle(color: myStyle.mainColor, fontSize: 17.sp),
+                    ),
+                  ),
+                ],
+              );
+            }
+          }),
           SizedBox(height: 15.h),
           SizedBox(
             child: widget.thumbnail != null

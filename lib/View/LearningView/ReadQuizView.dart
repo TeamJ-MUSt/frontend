@@ -79,13 +79,11 @@ class _ReadQuizViewState extends State<ReadQuizView>
   Future<AlertDialog> endQuiz() async {
     bool addWord = await quiz2Word(widget.songId);
     return AlertDialog(
-      content: Text(addWord ? "단어추가" : "등록실패"),
+      content: Text(addWord ? "단어추가가 완료되었습니다" : "등록실패"),
     );
   }
 
   Future<void> getQuiz() async {
-    bool isCreatedQuiz = await isCreateQuiz('READING', widget.songId);
-    if (isCreatedQuiz) {
       quizzes = await getReadQuizSet(
           widget.setNum, widget.songId); // 클래스 레벨의 quizzes를 직접 업데이트
       print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
@@ -99,9 +97,6 @@ class _ReadQuizViewState extends State<ReadQuizView>
       } else {
         print('Quiz data is empty');
       }
-    } else {
-      await getQuiz();
-    }
   }
 
   void updateQuizDisplay(int index) {

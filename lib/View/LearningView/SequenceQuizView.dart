@@ -24,7 +24,7 @@ class SequenceQuizView extends StatefulWidget {
 class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerProviderStateMixin {
   List<SeqQuiz> quizzes = [];
   int currentQuizIndex = 0;
-  List<String> selectedWords = [];
+  List<int> selectedIndices = [];
   bool isCorrect = false;
   bool isSubmit = false;
   String submitMent = '제출하기'; // 제출멘트
@@ -75,8 +75,7 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
   void _translateCurrentQuiz() async {
     try {
       final text = quizzes[currentQuizIndex].answers[0];
-      final translated = await _translationService.translate(text, 'ko');
-
+      final translated = await _translationService.translate(text);
 
       setState(() {
         translatedText = translated;
@@ -89,14 +88,14 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
     }
   }
 
-  void selectWord(String word) {
+  void selectWord(int index) {
     setState(() {
-      if (selectedWords.contains(word)) {
-        selectedWords.remove(word);
+      if (selectedIndices.contains(index)) {
+        selectedIndices.remove(index);
       } else {
-        selectedWords.add(word);
+        selectedIndices.add(index);
       }
-      if (selectedWords.length == quizzes[currentQuizIndex].choices.length) {
+      if (selectedIndices.length == quizzes[currentQuizIndex].choices.length) {
         submitButtonColor = myStyle.mainColor;
       } else {
         submitButtonColor = myStyle.basicGray;
@@ -108,7 +107,8 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
     setState(() {
       isSubmit = true;
       String real_answer = quizzes[currentQuizIndex].answers[0].replaceAll(' ', '');
-      if (selectedWords.join('') == real_answer) {
+      String selectedWords = selectedIndices.map((i) => quizzes[currentQuizIndex].choices[i]).join('');
+      if (selectedWords == real_answer) {
         isCorrect = true;
         submitButtonColor = myStyle.pointColor;
         submitMent = "다음으로";
@@ -124,7 +124,7 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
 
   void resetSelection() {
     setState(() {
-      selectedWords.clear();
+      selectedIndices.clear();
       isSubmit = false;
       submitButtonColor = myStyle.basicGray;
     });
@@ -132,7 +132,7 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
 
   void updateQuizDisplay() {
     setState(() {
-      selectedWords.clear();
+      selectedIndices.clear();
       isCorrect = false;
       isSubmit = false;
       submitMent = "제출하기";
@@ -153,7 +153,6 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
       print("마지막 퀴즈입니다.");
       Get.until((route) => Get.previousRoute == '/'); // 스택에서 두 개의 화면 제거
       Get.to(() => QuizEndView(correctCnt: correctCnt));
-
     }
   }
 
@@ -215,7 +214,7 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                           height: 10.h,
                         ),
                         Text(
-                          selectedWords.join(''),
+                          selectedIndices.map((i) => currentQuiz.choices[i]).join(''),
                           style: myStyle.textTheme.titleMedium,
                         ),
                       ],
@@ -236,16 +235,17 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                       children: [
                         Wrap(
                           spacing: 8.0,
-                          children: currentQuiz.choices.map((word) {
+                          children: List.generate(currentQuiz.choices.length, (index) {
+                            final word = currentQuiz.choices[index];
                             return ElevatedButton(
                               onPressed: () {
-                                selectWord(word);
+                                selectWord(index);
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: selectedWords.contains(word)
+                                foregroundColor: selectedIndices.contains(index)
                                     ? Colors.black
                                     : Colors.white,
-                                backgroundColor: selectedWords.contains(word)
+                                backgroundColor: selectedIndices.contains(index)
                                     ? myStyle.basicGray
                                     : myStyle.mainColor,
                                 elevation: 0,
@@ -253,13 +253,13 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                               child: Text(
                                 word,
                                 style: TextStyle(
-                                  color: selectedWords.contains(word)
+                                  color: selectedIndices.contains(index)
                                       ? Colors.black
                                       : Colors.white,
                                 ),
                               ),
                             );
-                          }).toList(),
+                          }),
                         ),
                       ],
                     ),
@@ -298,7 +298,7 @@ class _SequenceQuizViewState extends State<SequenceQuizView> with SingleTickerPr
                   child: InkWell(
                     onTap: () {
                       if (submitMent == "제출하기") {
-                        if (selectedWords.length == currentQuiz.choices.length) {
+                        if (selectedIndices.length == currentQuiz.choices.length) {
                           submitAnswer();
                         }
                       } else if (submitMent == "다음으로") {

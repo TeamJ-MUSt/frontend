@@ -3,10 +3,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:must/View/Widget/recommandWidget.dart';
 import 'package:must/style.dart' as myStyle;
 
 import '../../data/searchJson.dart';
+import '../SongDetailView/SongDetailView.dart';
 class RecommandCard extends StatelessWidget {
   RecommandCard({required this.songs, required this.thumbnails, super.key});
   List<SearchSong> songs = [];
@@ -61,25 +64,33 @@ class RecommandCard extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.play_arrow_outlined,
-                      size: 35.h,
-                      color: myStyle.mainColor,
-                    ),
-                    Text(
-                      "학습 바로가기",
-                      style: TextStyle(
-                          fontSize: 14.sp,
-                          fontFamily: 'NotoSansCJK',
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFCC2036)),
-                    ),
-                  ],
+              child: InkWell(
+                onTap: (){
+                  Get.to(()=>SongDetailView(
+                    song: songs[0],
+                    thumbnail: thumbnails[songs[0].songId],
+                  ));
+                },
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.play_arrow_outlined,
+                        size: 35.h,
+                        color: myStyle.mainColor,
+                      ),
+                      Text(
+                        "학습 바로가기",
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            fontFamily: 'NotoSansCJK',
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFCC2036)),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

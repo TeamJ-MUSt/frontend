@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 class MeaningQuizView extends StatefulWidget {
   MeaningQuizView({required this.songId, required this.setNum, super.key});
+
   final int songId;
   final int setNum;
 
@@ -19,7 +20,8 @@ class MeaningQuizView extends StatefulWidget {
   State<MeaningQuizView> createState() => _MeaningQuizViewState();
 }
 
-class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProviderStateMixin {
+class _MeaningQuizViewState extends State<MeaningQuizView>
+    with SingleTickerProviderStateMixin {
   List<MeanQuiz> quizzes = []; // 퀴즈 리스트
   int currentQuizIndex = 0; // 현재 퀴즈 번호
   late String question; // 문제
@@ -77,31 +79,31 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
   }
 
   Future<void> getQuiz() async {
-    bool isCreatedQuiz = await isCreateQuiz('MEANING', widget.songId);
-    if (isCreatedQuiz) {
-      quizzes = await getMeanQuizSet(widget.setNum, widget.songId); // 클래스 레벨의 quizzes를 직접 업데이트
-      print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
-      if (quizzes.isNotEmpty) {
-        for (var quiz in quizzes) {
-          // answers를 choices에 추가하고 랜덤으로 섞습니다.
-          quiz.choices.add(quiz.answers[0]);
-          quiz.choices.shuffle(Random());
-        }
-        updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
-      } else {
-        print('Quiz data is empty');
+    quizzes = await getMeanQuizSet(
+        widget.setNum, widget.songId); // 클래스 레벨의 quizzes를 직접 업데이트
+    print("Loaded ${quizzes.length} quizzes."); // 로드된 퀴즈의 수 로깅
+    if (quizzes.isNotEmpty) {
+      for (var quiz in quizzes) {
+        // answers를 choices에 추가하고 랜덤으로 섞습니다.
+        quiz.choices.add(quiz.answers[0]);
+        quiz.choices.shuffle(Random());
       }
+      updateQuizDisplay(0); // 첫 번째 퀴즈로 시작
+    } else {
+      print('Quiz data is empty');
     }
   }
 
   void updateQuizDisplay(int index) {
-    if (quizzes.isNotEmpty) { // 리스트가 비어 있지 않은지 확인
+    if (quizzes.isNotEmpty) {
+      // 리스트가 비어 있지 않은지 확인
       setState(() {
         currentQuizIndex = index;
         question = quizzes[index].word;
         choices = quizzes[index].choices;
         answers = quizzes[index].answers[0];
-        correctIndex = quizzes[index].choices.indexOf(answers); // 정답의 새로운 인덱스 찾기
+        correctIndex =
+            quizzes[index].choices.indexOf(answers); // 정답의 새로운 인덱스 찾기
         selectedIndex = -1;
         resultMessage = '';
         submitMent = "제출하기";
@@ -129,7 +131,8 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
         correctCnt++;
       } else {
         resultMessage = '오답입니다. 정답: $answers';
-        submitButtonColor = myStyle.mainColor; // Assuming you have a color set for errors
+        submitButtonColor =
+            myStyle.mainColor; // Assuming you have a color set for errors
       }
 
       // Always allow moving to the next question after a submission
@@ -150,10 +153,10 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
       onTap: end
           ? () {}
           : () {
-        setState(() {
-          selectedIndex = index;
-        });
-      },
+              setState(() {
+                selectedIndex = index;
+              });
+            },
       child: Container(
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
@@ -226,26 +229,31 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(resultMessage, style: myStyle.textTheme.bodyMedium),
+                      child: Text(resultMessage,
+                          style: myStyle.textTheme.bodyMedium),
                     ),
                     ...choices.asMap().entries.map((entry) {
                       int idx = entry.key;
                       String val = entry.value;
                       return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 3.h, horizontal: 20.w),
                         child: optionButton(val, idx),
                       );
                     }).toList(),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
                       child: InkWell(
                         onTap: () {
                           if (submitMent == "다음으로" || submitMent == "퀴즈 끝") {
                             if (currentQuizIndex < quizzes.length - 1) {
-                              updateQuizDisplay(currentQuizIndex + 1); // Move to the next question
+                              updateQuizDisplay(currentQuizIndex +
+                                  1); // Move to the next question
                             } else {
                               // 퀴즈가 끝났을 때
-                              Get.until((route) => Get.previousRoute == '/'); // 스택에서 두 개의 화면 제거
+                              Get.until((route) =>
+                                  Get.previousRoute == '/'); // 스택에서 두 개의 화면 제거
                               Get.to(() => QuizEndView(correctCnt: correctCnt));
                               // Get.offAll(() => QuizEndView(correctCnt: correctCnt,));
                             }
@@ -269,7 +277,8 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 3.h, horizontal: 20.w),
                       child: InkWell(
                         onTap: skipToLastQuestion,
                         child: Text(
@@ -295,13 +304,13 @@ class _MeaningQuizViewState extends State<MeaningQuizView> with SingleTickerProv
                 height: 120.w,
                 decoration: resultMessage == '정답입니다!'
                     ? BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.green,
-                    style: BorderStyle.solid,
-                    width: 7,
-                  ),
-                )
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.green,
+                          style: BorderStyle.solid,
+                          width: 7,
+                        ),
+                      )
                     : BoxDecoration(),
                 child: Center(
                   child: Icon(
