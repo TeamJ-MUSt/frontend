@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:must/View/Widget/recommandWidget.dart';
@@ -20,7 +19,7 @@ class NavigationTem extends StatefulWidget {
 class _NavigationTemState extends State<NavigationTem> {
   List<SearchSong> songs = [];
   Map<int, Uint8List> thumbnails = {};
-  List<int> displayIndexes = [3, 1, 6, 10, 13, 11, 14, 4, 40, 18 ]; // 여기서 특정 인덱스를 지정합니다.
+  List<int> displayIndexes = [3, 1, 6, 10, 13, 11, 14, 4, 40, 21]; // 여기서 특정 인덱스를 지정합니다.
 
   @override
   void initState() {
@@ -149,52 +148,51 @@ class _NavigationTemState extends State<NavigationTem> {
                 crossAxisCount: 3,
                 childAspectRatio: (5 / 7),
                 crossAxisSpacing: 3.w,
+                mainAxisSpacing: 3.h,
               ),
               itemBuilder: (context, index) {
-                int displayIndex = displayIndexes[index];
-                if (displayIndex - 1 >= songs.length) {
+                int displayIndex = displayIndexes[index] - 1; // 실제 인덱스는 0부터 시작하므로
+                if (displayIndex >= songs.length) {
                   return SizedBox(); // 범위를 벗어난 경우 빈 위젯 반환
                 }
                 return GestureDetector(
                   onTap: () {
                     Get.to(() => SongDetailView(
-                      song: songs[displayIndex - 1],
-                      thumbnail: thumbnails[songs[displayIndex - 1].songId],
+                      song: songs[displayIndex],
+                      thumbnail: thumbnails[songs[displayIndex].songId],
                     ));
                   },
-                  child: Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        width: 95.w,
+                        height: 90.h,
+                        child: thumbnails[songs[displayIndex].songId] != null
+                            ? Image.memory(
+                          thumbnails[songs[displayIndex].songId]!,
+                          fit: BoxFit.cover,
+                        )
+                            : Container(
                           width: 95.w,
                           height: 90.h,
-                          child: thumbnails[songs[displayIndex - 1].songId] != null
-                              ? Image.memory(
-                            thumbnails[songs[displayIndex - 1].songId]!,
-                            fit: BoxFit.fitWidth,
-                          )
-                              : Container(
-                            width: 95.w,
-                            height: 90.h,
-                            color: Colors.grey,
-                          ),
+                          color: Colors.grey,
                         ),
-                        Text(
-                          songs[displayIndex - 1].title,
-                          overflow: TextOverflow.ellipsis,
-                          style: myStyle.textTheme.labelLarge,
-                        ),
-                        Text(
-                          songs[displayIndex - 1].artist,
-                          overflow: TextOverflow.ellipsis,
-                          style: myStyle.textTheme.displaySmall,
-                        ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        songs[displayIndex].title,
+                        overflow: TextOverflow.ellipsis,
+                        style: myStyle.textTheme.labelLarge,
+                      ),
+                      Text(
+                        songs[displayIndex].artist,
+                        overflow: TextOverflow.ellipsis,
+                        style: myStyle.textTheme.displaySmall,
+                      ),
+                    ],
                   ),
                 );
               },

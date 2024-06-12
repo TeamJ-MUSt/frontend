@@ -17,7 +17,8 @@ import 'SeqQuizJson2.dart';
 import 'musicWordJson.dart';
 
 // String ip ='222.108.102.12:9090';
-String ip = '10.210.98.59:8080';
+// String ip = '10.210.98.59:8080';
+String ip = '192.168.1.79:8080';
 
 Uint8List decodeBase64(String base64String) {
   return base64.decode(base64String);
